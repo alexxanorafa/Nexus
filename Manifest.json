@@ -1,0 +1,26 @@
+{
+  "name": "Monopólio Quântico - Tese Design",
+  "short_name": "MonopólioQ",
+  "description": "Monopólio do Universo Quântico - Tese de Doutoramento em Design Multimédia",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000814",
+  "theme_color": "#001d3d",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2300bbf9'/><circle cx='50' cy='50' r='20' fill='%23ffd60a'/><path d='M50,20 L50,80 M20,50 L80,50' stroke='white' stroke-width='5'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["education", "games", "entertainment"],
+  "shortcuts": [
+    {
+      "name": "Nova Transcendência",
+      "short_name": "Jogar",
+      "description": "Iniciar nova jornada quântica",
+      "url": "/"
+    }
+  ]
+}
