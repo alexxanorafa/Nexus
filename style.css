@@ -1,0 +1,97 @@
+body {
+  background: #0b0e14;
+  color: #e6e6e6;
+  font-family: system-ui, sans-serif;
+  padding: 20px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+h1 {
+  font-weight: 300;
+  color: #8a5cf5;
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 2.5em;
+}
+
+#status {
+  background: #1a1f2e;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+#status div {
+  font-size: 1.1em;
+}
+
+#status span {
+  color: #64d2ff;
+  font-weight: bold;
+}
+
+button {
+  background: linear-gradient(135deg, #8a5cf5 0%, #64d2ff 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-size: 1.1em;
+  border-radius: 8px;
+  transition: transform 0.2s;
+  margin-bottom: 20px;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+#panteao {
+  background: #1a1f2e;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+#panteao h3 {
+  color: #8a5cf5;
+  margin-top: 0;
+}
+
+#deuses {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.deus-carta {
+  background: #2a3142;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #8a5cf5;
+}
+
+.deus-carta h4 {
+  margin: 0 0 10px 0;
+  color: #64d2ff;
+}
+
+.cartas-lista {
+  font-size: 0.9em;
+  color: #c5c8d6;
+}
+
+pre {
+  background: #020617;
+  padding: 20px;
+  margin-top: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: 10px;
+  border: 1px solid #374151;
+  font-family: 'Courier New', monospace;
+}
