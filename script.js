@@ -1,6 +1,6 @@
 /**
  * NEXUS 2126 - CORE ENGINE V3.0
- * Sistema Unificado com Memória, Progressão e Feedback
+ * Sistema Unificado com Memória, Progressão e Feedback Poético
  */
 
 class UniverseState {
@@ -28,12 +28,10 @@ class UniverseState {
         this.history = [];
         this.lastOracleDraws = [];
         this.lastEventTime = Date.now();
-        this.phase = 'explore'; // explore, alter, receive, choose
+        this.phase = 'explore';
         
-        // Desbloqueios por nível
         this.unlockThresholds = [5, 15, 30, 50];
         
-        // Modificadores por campo
         this.fieldMods = {
             norse: { speed: 0.8, energyCost: 1.2, oracleWeight: 2, stability: 0.9 },
             greek: { speed: 1.5, energyCost: 0.8, oracleWeight: 1, stability: 0.6 },
@@ -59,7 +57,6 @@ class UniverseState {
             this.onFieldChange();
         }
         
-        // Ganhar influência no campo atual
         this.addInfluence(this.field, 0.01);
     }
 
@@ -69,7 +66,6 @@ class UniverseState {
         const oldLevel = this.influence[field].level;
         this.influence[field].level += amount;
         
-        // Verificar desbloqueios
         for (const threshold of this.unlockThresholds) {
             if (oldLevel < threshold && this.influence[field].level >= threshold) {
                 if (!this.influence[field].unlocked.includes(threshold)) {
@@ -87,10 +83,8 @@ class UniverseState {
     }
 
     onFieldChange() {
-        // Aumentar entropia ao mudar de campo
         this.energy.entropy = Math.min(0.3, this.energy.entropy + 0.02);
         
-        // Registrar na história
         this.history.push({
             type: 'field_change',
             field: this.field,
@@ -138,48 +132,38 @@ class MovementEngine {
         const mod = this.universe.getFieldModifier(field);
         let vector = { x: 0, y: 0 };
         
-        // Se houver toque, usar vetor de toque
         if (touchVector) {
             vector = touchVector;
         } else {
-            // Campo vetorial baseado na mitologia
             switch(field) {
                 case 'norse':
-                    // Atração espiral para centro (25,25)
                     const center = { x: 25, y: 25 };
                     const dx = center.x - this.universe.position.x;
                     const dy = center.y - this.universe.position.y;
                     const distance = Math.sqrt(dx*dx + dy*dy);
                     
-                    // Força de atração (mais forte perto do centro)
                     const attraction = Math.max(0.01, 0.5 - distance/100);
                     vector.x = dx * attraction * 0.01;
                     vector.y = dy * attraction * 0.01;
                     
-                    // Componente angular para espiral
                     this.driftAngle += 0.02;
                     vector.x += Math.sin(this.driftAngle) * 0.03;
                     vector.y += Math.cos(this.driftAngle) * 0.03;
                     break;
                     
                 case 'greek':
-                    // Movimento errático rápido
                     vector.x = (Math.random() - 0.5) * 0.3;
                     vector.y = (Math.random() - 0.5) * 0.3;
-                    
-                    // Tendência a ir para direita
                     vector.x += 0.1;
                     break;
                     
                 case 'egyptian':
-                    // Movimento lento e circular
                     this.driftAngle += 0.01;
                     vector.x = Math.sin(this.driftAngle) * 0.02;
                     vector.y = Math.cos(this.driftAngle) * 0.02;
                     break;
                     
                 case 'celtic':
-                    // Mudanças aleatórias de direção
                     if (Math.random() < 0.05) {
                         this.celticDirection = {
                             x: (Math.random() - 0.5) * 0.4,
@@ -191,23 +175,19 @@ class MovementEngine {
             }
         }
         
-        // Aplicar throttle e modificadores
         const speed = (throttle / 100) * 0.25 * mod.speed;
         vector.x *= speed;
         vector.y *= speed;
         
-        // Suavizar transições
         const smooth = 0.3;
         this.lastVector.x = this.lastVector.x * (1-smooth) + vector.x * smooth;
         this.lastVector.y = this.lastVector.y * (1-smooth) + vector.y * smooth;
         
-        // Atualizar posição
         this.universe.updatePosition(
             this.universe.position.x + this.lastVector.x,
             this.universe.position.y + this.lastVector.y
         );
         
-        // Consumo energético
         if (throttle > 10 && Math.random() > 0.9) {
             const cost = mod.energyCost * (throttle/100);
             this.universe.consumeEnergy(cost);
@@ -217,6 +197,13 @@ class MovementEngine {
     }
 }
 
+/**
+ * NEXUS 2126 - CORE ENGINE V3.1
+ * Sistema com Cartas Otimizadas e Efeitos Quânticos
+ */
+
+// ... (mantenha todo o código anterior até a classe OracleEngine)
+
 class OracleEngine {
     constructor(universe) {
         this.universe = universe;
@@ -225,60 +212,120 @@ class OracleEngine {
             base: [
                 { 
                     name: "O Louco", 
-                    meaning: "Novos começos, liberdade, aventura",
+                    meaning: "O vazio antes do salto. A fé no desconhecido.",
                     effect: { q: 50, c: 10 },
-                    symbol: "🃏"
+                    symbol: "🌀"
                 },
                 { 
                     name: "O Mago", 
-                    meaning: "Poder, manifestação, habilidade",
+                    meaning: "O gesto que transforma pensamento em realidade.",
                     effect: { q: 100, c: 20 },
-                    symbol: "🧙"
+                    symbol: "✨"
                 },
                 { 
                     name: "A Sacerdotisa", 
-                    meaning: "Intuição, mistério, sabedoria oculta",
+                    meaning: "O silêncio entre os mundos. A sabedoria que não se fala.",
                     effect: { q: 20, c: 50 },
                     symbol: "🌙"
                 },
                 { 
                     name: "A Imperatriz", 
-                    meaning: "Fertilidade, abundância, criação",
+                    meaning: "A terra que recebe a semente. A abundância natural.",
                     effect: { q: 80, c: 30 },
-                    symbol: "👑"
+                    symbol: "🌿"
                 },
                 { 
                     name: "A Torre", 
-                    meaning: "Mudança súbita, caos, revelação",
+                    meaning: "O raio que derruba estruturas velhas.",
                     effect: { q: -50, c: 40 },
                     symbol: "⚡"
                 },
                 { 
                     name: "A Estrela", 
-                    meaning: "Esperança, renovação, inspiração",
+                    meaning: "A luz que atravessa a noite mais densa.",
                     effect: { q: 60, c: 60 },
-                    symbol: "⭐"
+                    symbol: "💫"
                 }
             ],
             norse: [
-                { name: "Odin", meaning: "Sacrifício pela sabedoria", effect: { q: 150, c: -20 }, symbol: "👁️" },
-                { name: "Thor", meaning: "Força bruta e proteção", effect: { q: 80, c: 10 }, symbol: "⚡" },
-                { name: "Frigg", meaning: "Destino e intuição", effect: { q: 30, c: 40 }, symbol: "🔮" }
+                { 
+                    name: "Odin", 
+                    meaning: "O sacrifício por visão total. A dor que abre portais.",
+                    effect: { q: 150, c: -20 }, 
+                    symbol: "👁️"
+                },
+                { 
+                    name: "Thor", 
+                    meaning: "O trovão que parte montanhas. A força bruta.",
+                    effect: { q: 80, c: 10 }, 
+                    symbol: "⚡"
+                },
+                { 
+                    name: "Frigg", 
+                    meaning: "O tear que tece destinos. O fio invisível.",
+                    effect: { q: 30, c: 40 }, 
+                    symbol: "🧵"
+                }
             ],
             greek: [
-                { name: "Zeus", meaning: "Poder absoluto", effect: { q: 200, c: -30 }, symbol: "👑" },
-                { name: "Atena", meaning: "Sabedoria estratégica", effect: { q: 70, c: 50 }, symbol: "🦉" },
-                { name: "Apolo", meaning: "Luz e profecia", effect: { q: 90, c: 30 }, symbol: "☀️" }
+                { 
+                    name: "Zeus", 
+                    meaning: "O raio que decide. O poder absoluto.",
+                    effect: { q: 200, c: -30 }, 
+                    symbol: "👑"
+                },
+                { 
+                    name: "Atena", 
+                    meaning: "A estratégia que vence sem lutar.",
+                    effect: { q: 70, c: 50 }, 
+                    symbol: "🦉"
+                },
+                { 
+                    name: "Apolo", 
+                    meaning: "A luz que revela e cura. A música que acalma.",
+                    effect: { q: 90, c: 30 }, 
+                    symbol: "☀️"
+                }
             ],
             egyptian: [
-                { name: "Ra", meaning: "Criação e poder solar", effect: { q: 120, c: 20 }, symbol: "🔥" },
-                { name: "Isis", meaning: "Magia e cura", effect: { q: 40, c: 80 }, symbol: "𓆓" },
-                { name: "Osíris", meaning: "Renascimento", effect: { q: 60, c: 60 }, symbol: "☥" }
+                { 
+                    name: "Ra", 
+                    meaning: "O sol que nasce todas as manhãs.",
+                    effect: { q: 120, c: 20 }, 
+                    symbol: "🔥"
+                },
+                { 
+                    name: "Isis", 
+                    meaning: "A magia que reconstrói o quebrado.",
+                    effect: { q: 40, c: 80 }, 
+                    symbol: "𓆓"
+                },
+                { 
+                    name: "Osíris", 
+                    meaning: "A morte que é apenas porta.",
+                    effect: { q: 60, c: 60 }, 
+                    symbol: "☥"
+                }
             ],
             celtic: [
-                { name: "Morrígan", meaning: "Destino e guerra", effect: { q: -30, c: 70 }, symbol: "⚔️" },
-                { name: "Dagda", meaning: "Abundância", effect: { q: 100, c: 10 }, symbol: "🍯" },
-                { name: "Brigid", meaning: "Cura e inspiração", effect: { q: 50, c: 40 }, symbol: "🔥" }
+                { 
+                    name: "Morrígan", 
+                    meaning: "O corvo que anuncia o fim.",
+                    effect: { q: -30, c: 70 }, 
+                    symbol: "⚔️"
+                },
+                { 
+                    name: "Dagda", 
+                    meaning: "O caldeirão que nunca esvazia.",
+                    effect: { q: 100, c: 10 }, 
+                    symbol: "🍯"
+                },
+                { 
+                    name: "Brigid", 
+                    meaning: "O fogo que aquece e inspira.",
+                    effect: { q: 50, c: 40 }, 
+                    symbol: "🔥"
+                }
             ]
         };
     }
@@ -287,7 +334,6 @@ class OracleEngine {
         const actualField = field || this.universe.field || 'base';
         const deck = this.getDeckForField(actualField);
         
-        // Penalizar cartas recentes
         const weightedDeck = deck.map(card => {
             let weight = 1;
             const recentDraws = this.universe.lastOracleDraws.filter(d => 
@@ -297,20 +343,17 @@ class OracleEngine {
             return { card, weight };
         });
         
-        // Seleção ponderada
         const totalWeight = weightedDeck.reduce((sum, w) => sum + w.weight, 0);
         let random = Math.random() * totalWeight;
         
         for (const { card, weight } of weightedDeck) {
             if (random < weight) {
-                // Aplicar modificadores do campo
                 const mod = this.universe.getFieldModifier(actualField);
                 const adjustedEffect = {
                     q: card.effect.q * mod.oracleWeight,
                     c: card.effect.c * (actualField === 'base' ? 1 : 1.5)
                 };
                 
-                // Registrar no histórico
                 this.universe.lastOracleDraws.unshift({
                     card: { ...card, effect: adjustedEffect },
                     field: actualField,
@@ -345,7 +388,6 @@ class OracleEngine {
     getDeckForField(field) {
         let deck = [...this.decks.base];
         
-        // Adicionar cartas específicas do campo se desbloqueado
         if (field !== 'base' && this.universe.influence[field].level >= 10) {
             deck = [...deck, ...this.decks[field]];
         }
@@ -377,17 +419,13 @@ class UIManager {
         vehicle.style.left = `${pos.x}%`;
         vehicle.style.top = `${pos.y}%`;
         
-        // Atualizar HUD
         const qX = pos.x < 50 ? 'L' : 'R';
         const qY = pos.y < 50 ? 'T' : 'B';
         document.getElementById('hudPos').textContent = `${qY}${qX}-${Math.floor(pos.x)}`;
         
-        // Atualizar campo atual
         const field = this.universe.field;
         if (field) {
             document.getElementById('fieldDisplay').textContent = `FIELD: ${field.toUpperCase()}`;
-            
-            // Adicionar classe ao body para modos
             document.body.classList.remove('norse-field', 'greek-field', 'egyptian-field', 'celtic-field');
             document.body.classList.add(`${field}-field`);
         }
@@ -403,7 +441,6 @@ class UIManager {
         document.getElementById('barConsciousness').style.width = `${cPct}%`;
         document.getElementById('valConsciousness').textContent = Math.floor(this.universe.energy.consciousness);
         
-        // Velocidade
         const throttle = this.universe.throttle;
         document.getElementById('velocityDisplay').textContent = `SPD: ${Math.floor(throttle)}%`;
     }
@@ -420,7 +457,6 @@ class UIManager {
                 bar.style.backgroundColor = influence.color;
             }
             
-            // Atualizar zonas desbloqueadas
             const zone = document.querySelector(`.district-zone[data-field="${field}"]`);
             if (zone) {
                 if (influence.level >= 5) {
@@ -448,15 +484,34 @@ class UIManager {
         }
     }
 
-    showTransmission(god, message) {
+    showTransmission(source, message) {
         const tx = document.getElementById('divineTransmission');
-        document.getElementById('txGodName').textContent = god;
+        
+        const sourceNames = {
+            SYSTEM: "VOZ DO SISTEMA",
+            ODIN: "SUSSURRO DE ODIN",
+            ZEUS: "ECO DO OLIMPO",
+            RA: "SOL DE RÁ",
+            MORRIGAN: "SOMBRA DA MORRÍGAN"
+        };
+        
+        document.getElementById('txGodName').textContent = 
+            sourceNames[source] || source;
+        
         document.getElementById('txMessage').textContent = message;
         
         tx.classList.add('active');
-        setTimeout(() => tx.classList.remove('active'), 5000);
         
-        this.log(`Transmission: ${god} - ${message}`);
+        const logMessages = [
+            `Sinal recebido de ${source.toLowerCase()}`,
+            `${source} comunica-se`,
+            `Transmissão: ${source}`,
+            `Mensagem entrelaçada`
+        ];
+        
+        this.log(logMessages[Math.floor(Math.random() * logMessages.length)]);
+        
+        setTimeout(() => tx.classList.remove('active'), 5000);
     }
 
     showOracle(cards) {
@@ -464,33 +519,43 @@ class UIManager {
         const display = document.getElementById('cardDisplay');
         const field = this.universe.field || 'base';
         
-        // Atualizar título
-        const fieldNames = {
-            norse: 'RÚNICO',
-            greek: 'OLÍMPICO',
-            egyptian: 'FARAÔNICO',
-            celtic: 'DRUIDA',
-            base: 'QUÂNTICO'
+        const fieldTitles = {
+            norse: 'Sussurros das Nornas',
+            greek: 'Ecos do Olimpo', 
+            egyptian: 'Vozes das Pirâmides',
+            celtic: 'Murmúrios dos Druidas',
+            base: 'Oráculo Quântico'
         };
         
         document.getElementById('currentDeckTitle').textContent = 
-            `SISTEMA ${fieldNames[field]}`;
+            fieldTitles[field];
         
-        // Limpar e criar cartas
+        const drawTypes = {
+            norse: 'Três Fios do Destino',
+            greek: 'Três Votos do Olimpo',
+            egyptian: 'Três Selos do Nilo',
+            celtic: 'Três Círculos de Sabedoria',
+            base: 'Três Destinos Entrelaçados'
+        };
+        
+        document.getElementById('drawTypeLabel').textContent = 
+            drawTypes[field];
+        
         display.innerHTML = '';
         cards.forEach((card, index) => {
             const cardEl = document.createElement('div');
             cardEl.className = 'oracle-card unrevealed';
             cardEl.dataset.index = index;
+            cardEl.dataset.cardName = card.name;
+            
             cardEl.innerHTML = `
-                <div class="card-front">?</div>
+                <div class="card-front">
+                    <div class="card-symbol">?</div>
+                    <div class="card-hint">Toca para revelar</div>
+                </div>
                 <div class="card-back">
                     <div class="card-name">${card.name}</div>
                     <div class="card-meaning">${card.meaning}</div>
-                    <div class="card-effects">
-                        <small>Q: ${card.effect.q > 0 ? '+' : ''}${card.effect.q}</small>
-                        <small>C: ${card.effect.c > 0 ? '+' : ''}${card.effect.c}</small>
-                    </div>
                 </div>
             `;
             
@@ -500,6 +565,17 @@ class UIManager {
         
         overlay.classList.add('active');
         document.body.classList.add('ritual-mode');
+        
+        const arrivalMessages = {
+            norse: 'Os corvos de Odin trazem visões...',
+            greek: 'O néctar do Olimpo revela-se...',
+            egyptian: 'As areias do tempo movem-se...',
+            celtic: 'O véu dos mundos afina-se...',
+            base: 'O campo quântico colapsa...'
+        };
+        
+        document.getElementById('destinyText').textContent = 
+            arrivalMessages[field];
     }
 
     revealCard(cardEl, card) {
@@ -508,20 +584,52 @@ class UIManager {
         cardEl.classList.remove('unrevealed');
         cardEl.classList.add('flipped');
         
-        // Aplicar efeitos
+        const oldQ = this.universe.energy.quantum;
+        const oldC = this.universe.energy.consciousness;
+        
         this.universe.addEnergy(card.effect.q, 'quantum');
         this.universe.addEnergy(card.effect.c, 'consciousness');
         
-        // Mostrar interpretação
+        const deltaQ = this.universe.energy.quantum - oldQ;
+        
+        // Efeitos visuais baseados no tipo de carta
+        if (deltaQ > 0) {
+            cardEl.style.borderColor = '#00ffaa';
+            cardEl.style.boxShadow = '0 0 25px rgba(0, 255, 170, 0.4)';
+        } else if (deltaQ < 0) {
+            cardEl.style.borderColor = '#ff5555';
+            cardEl.style.boxShadow = '0 0 25px rgba(255, 85, 85, 0.4)';
+        } else {
+            cardEl.style.borderColor = '#9d4edd';
+            cardEl.style.boxShadow = '0 0 25px rgba(157, 78, 221, 0.4)';
+        }
+        
+        // Texto de interpretação com base no campo
+        const field = this.universe.field || 'base';
+        const interpretations = {
+            norse: `${card.name}: ${card.meaning}`,
+            greek: `${card.name}: ${card.meaning}`,
+            egyptian: `${card.name}: ${card.meaning}`,
+            celtic: `${card.name}: ${card.meaning}`,
+            base: `${card.name}: ${card.meaning}`
+        };
+        
         document.getElementById('destinyText').textContent = 
-            `${card.name}: ${card.meaning}`;
+            interpretations[field];
         
         // Feedback visual
-        cardEl.classList.add('revelation');
-        setTimeout(() => cardEl.classList.remove('revelation'), 2000);
+        const color = deltaQ > 0 ? '#00ffaa' : (deltaQ < 0 ? '#ff5555' : '#9d4edd');
+        this.createMicroFeedback(cardEl, '⚡', color);
         
-        this.log(`Oracle: ${card.name} revealed.`);
-        this.createMicroFeedback(cardEl, `+${card.effect.q}Ω`, this.universe.influence[this.universe.field]?.color || '#ffffff');
+        // Log poético
+        const logMessages = [
+            `O oráculo revela: ${card.name}`,
+            `${card.name} manifesta-se`,
+            `Visão: ${card.name}`,
+            `Destino desvelado: ${card.name}`
+        ];
+        
+        this.log(logMessages[Math.floor(Math.random() * logMessages.length)]);
     }
 
     closeOracle() {
@@ -553,12 +661,14 @@ class UIManager {
         const feed = document.getElementById('logFeed');
         const div = document.createElement('div');
         div.className = 'log-entry';
-        const ts = new Date().toLocaleTimeString('pt-BR', { hour12: false }).substring(0,5);
-        div.innerHTML = `<span class="log-ts">[${ts}]</span> ${message}`;
+        
+        const now = new Date();
+        const ts = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+        
+        div.innerHTML = `<span class="log-time">${ts}</span> ${message}`;
         feed.prepend(div);
         
-        // Limitar log a 15 entradas
-        if (feed.children.length > 15) {
+        if (feed.children.length > 12) {
             feed.removeChild(feed.lastChild);
         }
     }
@@ -571,6 +681,7 @@ class UIManager {
         feedback.style.color = color;
         feedback.style.left = `${rect.left + rect.width/2}px`;
         feedback.style.top = `${rect.top}px`;
+        feedback.style.fontSize = '16px';
         
         document.body.appendChild(feedback);
         this.microFeedbacks.push(feedback);
@@ -600,7 +711,6 @@ class UIManager {
         
         zone.appendChild(effect);
         
-        // Mostrar mensagem
         const messages = {
             5: `Nível ${threshold}: ${field.toUpperCase()} acessível`,
             15: `Nível ${threshold}: Deuses menores disponíveis`,
@@ -610,7 +720,6 @@ class UIManager {
         
         this.showTransmission('SYSTEM', messages[threshold] || `Nível ${threshold} alcançado em ${field}`);
         
-        // Remover efeito após animação
         setTimeout(() => {
             if (effect.parentNode) {
                 effect.parentNode.removeChild(effect);
@@ -631,6 +740,8 @@ class UIManager {
         }, 3000);
     }
 }
+
+// ... (mantenha o resto do código do script.js igual ao anterior)
 
 class NexusCore {
     constructor() {
@@ -655,7 +766,6 @@ class NexusCore {
         this.setupMobileControls();
         this.gameLoop();
         
-        // Restaurar estado salvo
         this.loadState();
     }
 
@@ -680,7 +790,6 @@ class NexusCore {
             
             bar.style.width = progress + "%";
             
-            // Atualizar mensagem a cada 20%
             if (progress % 20 < 4) {
                 const msgIndex = Math.min(Math.floor(progress / 20), messages.length - 1);
                 log.textContent = messages[msgIndex];
@@ -748,7 +857,6 @@ class NexusCore {
         const districtLayer = document.getElementById('districtLayer');
         const entityLayer = document.getElementById('entityLayer');
         
-        // Render districts
         const mythologies = [
             { id: "norse", name: "NÓRDICO", field: "norse", quadrant: {x:0, y:0, w:50, h:50} },
             { id: "greek", name: "GREGO", field: "greek", quadrant: {x:50, y:0, w:50, h:50} },
@@ -769,7 +877,6 @@ class NexusCore {
             districtLayer.appendChild(el);
         });
         
-        // Render gods
         const gods = [
             { id: "odin", name: "Odin", field: "norse", power: 9, cost: 300, desc: "Pai de todos e senhor da sabedoria." },
             { id: "thor", name: "Thor", field: "norse", power: 8, cost: 250, desc: "Deus do trovão e força bruta." },
@@ -785,7 +892,6 @@ class NexusCore {
             { id: "brigid", name: "Brigid", field: "celtic", power: 6, cost: 150, desc: "Cura, poesia e forja." }
         ];
         
-        // Distribuir deuses nos quadrantes
         gods.forEach(god => {
             const quadrant = mythologies.find(m => m.field === god.field).quadrant;
             const x = quadrant.x + 10 + Math.random() * 30;
@@ -807,7 +913,6 @@ class NexusCore {
             entityLayer.appendChild(el);
         });
         
-        // Render chakras no centro
         const chakras = [
             { id: "root", name: "Raiz", color: "#ff0000", freq: 396 },
             { id: "sacral", name: "Sacral", color: "#ff5500", freq: 417 },
@@ -865,7 +970,6 @@ class NexusCore {
         icon.addEventListener('click', toggleMenu);
         close.addEventListener('click', toggleMenu);
         
-        // Fechar ao clicar fora
         document.addEventListener('click', (e) => {
             if (menu.classList.contains('active') && 
                 !menu.contains(e.target) && 
@@ -876,14 +980,11 @@ class NexusCore {
     }
 
     setupControls() {
-        // Botão do oráculo
         document.getElementById('btnOraclePanel').addEventListener('click', () => this.triggerOracle());
         document.getElementById('btnOracleMobile').addEventListener('click', () => this.triggerOracle());
         
-        // Botão de pausa
         document.getElementById('btnPause').addEventListener('click', () => this.togglePause());
         
-        // Painel direito mobile
         document.getElementById('toggleDataPanel').addEventListener('click', () => {
             document.getElementById('rightPanel').classList.toggle('open');
         });
@@ -892,12 +993,10 @@ class NexusCore {
             document.getElementById('rightPanel').classList.remove('open');
         });
         
-        // Fechar modal
         document.getElementById('holoClose').addEventListener('click', () => {
             document.getElementById('holoModal').classList.remove('active');
         });
         
-        // Fechar ao clicar fora do modal
         document.addEventListener('click', (e) => {
             const modal = document.getElementById('holoModal');
             if (modal.classList.contains('active') && 
@@ -907,7 +1006,6 @@ class NexusCore {
             }
         });
         
-        // Salvar estado antes de sair
         window.addEventListener('beforeunload', () => this.saveState());
     }
 
@@ -936,19 +1034,16 @@ class NexusCore {
             const dx = touch.clientX - this.touchStart.x;
             const dy = touch.clientY - this.touchStart.y;
             
-            // Calcular vetor de movimento
             const magnitude = Math.sqrt(dx*dx + dy*dy);
             const vector = {
                 x: dx / (window.innerWidth * 0.5),
                 y: dy / (window.innerHeight * 0.5)
             };
             
-            // Atualizar throttle baseado na velocidade do gesto
             const timeDelta = Date.now() - this.touchStart.time;
             const speed = magnitude / Math.max(timeDelta, 1);
             this.universe.throttle = Math.min(100, speed * 2);
             
-            // Atualizar movimento
             this.movement.update(this.universe.throttle, vector);
             
             this.touchStart = {
@@ -968,7 +1063,6 @@ class NexusCore {
             vehicle.classList.remove('driving');
         });
         
-        // Controles de desktop com mouse
         board.addEventListener('mousedown', (e) => {
             if (e.button !== 0) return;
             
@@ -1020,33 +1114,26 @@ class NexusCore {
     }
 
     gameLoop() {
-        // Atualizar movimento se não estiver arrastando
         if (!this.isDragging && this.universe.throttle > 0) {
             this.movement.update(this.universe.throttle);
         }
         
-        // Reduzir throttle gradualmente
         if (this.universe.throttle > 0 && !this.isDragging) {
             this.universe.throttle *= 0.95;
             if (this.universe.throttle < 1) this.universe.throttle = 0;
         }
         
-        // Atualizar fase baseada no estado
         this.updatePhase();
         
-        // Eventos aleatórios
         if (Date.now() - this.universe.lastEventTime > 10000 && Math.random() < 0.1) {
             this.triggerRandomEvent();
             this.universe.lastEventTime = Date.now();
         }
         
-        // Verificar desbloqueios
         this.checkUnlocks();
         
-        // Atualizar UI
         this.ui.update();
         
-        // Próximo frame
         requestAnimationFrame(() => this.gameLoop());
     }
 
@@ -1102,7 +1189,6 @@ class NexusCore {
         this.universe.consumeEnergy(50, 'quantum');
         const cards = this.oracle.drawTriple();
         
-        // Mostrar na UI existente
         cards.forEach((card, i) => {
             const cardEl = document.querySelector(`.oracle-card[data-index="${i}"]`);
             if (cardEl) {
@@ -1150,18 +1236,17 @@ class NexusCore {
             if (unlock) {
                 this.ui.showUnlockEffect(field, unlock.threshold);
                 
-                // Desbloquear conteúdo
                 switch(unlock.index) {
-                    case 0: // Nível 5
+                    case 0:
                         this.ui.log(`${field.toUpperCase()} field accessible.`);
                         break;
-                    case 1: // Nível 15
+                    case 1:
                         this.ui.showTransmission("SYSTEM", `Minor deities available in ${field}.`);
                         break;
-                    case 2: // Nível 30
+                    case 2:
                         this.ui.showTransmission("SYSTEM", `Rituals unlocked in ${field}.`);
                         break;
-                    case 3: // Nível 50
+                    case 3:
                         this.ui.showTransmission("ASCENSION", `${field.toUpperCase()} MASTERY ACHIEVED`);
                         this.universe.addEnergy(500, 'quantum');
                         break;
@@ -1190,7 +1275,7 @@ class NexusCore {
             position: this.universe.position,
             energy: this.universe.energy,
             influence: this.universe.influence,
-            history: this.universe.history.slice(-50) // Últimas 50 entradas
+            history: this.universe.history.slice(-50)
         };
         
         localStorage.setItem('nexus2126_state', JSON.stringify(state));
@@ -1230,7 +1315,6 @@ class NexusCore {
     }
 }
 
-// Inicializar o sistema
 window.addEventListener('load', () => {
     window.nexus = new NexusCore();
 });
