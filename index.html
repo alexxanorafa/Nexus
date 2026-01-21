@@ -23,6 +23,36 @@
     <canvas id="quantumField"></canvas>
     <div id="quantumNebula"></div>
 
+    <!-- TUTORIAL OVERLAY -->
+    <div id="tutorialOverlay" class="tutorial-overlay">
+        <div class="tutorial-highlight" id="tutorialHighlight"></div>
+        <div class="tutorial-content">
+            <div class="tutorial-header">
+                <h3><i class="fas fa-graduation-cap"></i> NEXUS TUTORIAL</h3>
+                <span id="tutorialStep">1/8</span>
+            </div>
+            <div class="tutorial-body">
+                <p id="tutorialText">Bem-vindo ao Nexus 2126. Vamos aprender a pilotar o cockpit quântico.</p>
+            </div>
+            <div class="tutorial-footer">
+                <button id="tutorialPrev" class="tutorial-btn secondary">
+                    <i class="fas fa-arrow-left"></i> Anterior
+                </button>
+                <button id="tutorialSkip" class="tutorial-btn secondary">
+                    Pular Tutorial
+                </button>
+                <button id="tutorialNext" class="tutorial-btn primary">
+                    Próximo <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REABRIR TUTORIAL BUTTON -->
+    <div class="tutorial-reopen" id="tutorialReopen">
+        <i class="fas fa-question-circle"></i>
+    </div>
+
     <!-- COCKPIT -->
     <div class="cockpit-grid-container">
         <!-- TOP BAR -->
@@ -203,6 +233,14 @@
                     <i class="fas fa-dice-d20"></i>
                     <span>ORÁCULO</span>
                 </button>
+            </div>
+
+            <!-- MISSÕES -->
+            <div class="data-block" style="flex:1">
+                <h4>Missões <span id="missionCount" class="mission-count">0/4</span></h4>
+                <div class="missions-list" id="missionsList">
+                    <!-- Missões serão inseridas aqui -->
+                </div>
             </div>
 
             <div class="data-block" style="flex:1">

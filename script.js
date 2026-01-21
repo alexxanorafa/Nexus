@@ -1,7 +1,389 @@
 /**
- * NEXUS 2126 - CORE ENGINE V3.2
- * Sistema com Cartas Corrigidas e Revelação Individual
+ * NEXUS 2126 - CORE ENGINE V4.0
+ * Sistema completo com Tutorial, Missões e Cartas Expandidas
  */
+
+class MissionSystem {
+    constructor(universe) {
+        this.universe = universe;
+        this.activeMissions = [];
+        this.completedMissions = [];
+        this.initMissions();
+    }
+    
+    initMissions() {
+        this.missionTemplates = [
+            {
+                id: 'explorer',
+                title: 'EXPLORADOR INICIANTE',
+                description: 'Visite todos os 4 campos mitológicos',
+                type: 'visit_fields',
+                target: 4,
+                reward: { quantum: 300, consciousness: 100 },
+                icon: '🌍'
+            },
+            {
+                id: 'oracle_initiate',
+                title: 'INICIADO DO ORÁCULO',
+                description: 'Consulte o oráculo 3 vezes',
+                type: 'use_oracle',
+                target: 3,
+                reward: { quantum: 200, consciousness: 150 },
+                icon: '🔮'
+            },
+            {
+                id: 'norse_adept',
+                title: 'ADEUTO NÓRDICO',
+                description: 'Alcance nível 15 de influência nórdica',
+                type: 'influence',
+                field: 'norse',
+                target: 15,
+                reward: { quantum: 400, consciousness: 80 },
+                icon: '⚡'
+            },
+            {
+                id: 'entity_collector',
+                title: 'COLETOR DE ENTIDADES',
+                description: 'Interaja com 5 entidades diferentes',
+                type: 'interact_entities',
+                target: 5,
+                reward: { quantum: 250, consciousness: 200 },
+                icon: '✨'
+            }
+        ];
+        
+        this.loadProgress();
+        
+        if (this.activeMissions.length === 0) {
+            this.activateMission('explorer');
+            this.activateMission('oracle_initiate');
+        }
+    }
+    
+    activateMission(missionId) {
+        const template = this.missionTemplates.find(m => m.id === missionId);
+        if (!template) return;
+        
+        const mission = {
+            ...template,
+            progress: 0,
+            isCompleted: false
+        };
+        
+        this.activeMissions.push(mission);
+        this.saveProgress();
+        return mission;
+    }
+    
+    updateProgress(type, data = {}) {
+        let updated = false;
+        
+        this.activeMissions.forEach(mission => {
+            if (mission.isCompleted) return;
+            
+            let progressChanged = false;
+            
+            switch(mission.type) {
+                case 'visit_fields':
+                    if (type === 'field_change') {
+                        const uniqueFields = new Set();
+                        this.universe.history.forEach(event => {
+                            if (event.type === 'field_change') {
+                                uniqueFields.add(event.field);
+                            }
+                        });
+                        mission.progress = uniqueFields.size;
+                        progressChanged = true;
+                    }
+                    break;
+                    
+                case 'use_oracle':
+                    if (type === 'oracle_use') {
+                        mission.progress++;
+                        progressChanged = true;
+                    }
+                    break;
+                    
+                case 'influence':
+                    if (type === 'influence_gain' && data.field === mission.field) {
+                        mission.progress = this.universe.influence[mission.field].level;
+                        progressChanged = true;
+                    }
+                    break;
+                    
+                case 'interact_entities':
+                    if (type === 'entity_interact') {
+                        mission.progress++;
+                        progressChanged = true;
+                    }
+                    break;
+            }
+            
+            if (progressChanged && mission.progress >= mission.target) {
+                this.completeMission(mission);
+                updated = true;
+            }
+        });
+        
+        if (updated) {
+            this.saveProgress();
+        }
+    }
+    
+    completeMission(mission) {
+        mission.isCompleted = true;
+        mission.completedAt = Date.now();
+        
+        this.universe.addEnergy(mission.reward.quantum, 'quantum');
+        this.universe.addEnergy(mission.reward.consciousness, 'consciousness');
+        
+        this.activeMissions = this.activeMissions.filter(m => m.id !== mission.id);
+        this.completedMissions.push(mission);
+        
+        window.nexus.ui.showTransmission("MISSÃO", `"${mission.title}" completada! Recompensa recebida.`);
+        window.nexus.ui.log(`Missão completada: ${mission.title}`);
+        
+        this.activateNextMission(mission);
+    }
+    
+    activateNextMission(completedMission) {
+        const nextMissions = {
+            'explorer': 'norse_adept',
+            'oracle_initiate': 'entity_collector'
+        };
+        
+        const nextId = nextMissions[completedMission.id];
+        if (nextId) {
+            this.activateMission(nextId);
+        }
+    }
+    
+    saveProgress() {
+        const progress = {
+            active: this.activeMissions,
+            completed: this.completedMissions
+        };
+        localStorage.setItem('nexus_missions', JSON.stringify(progress));
+    }
+    
+    loadProgress() {
+        try {
+            const saved = localStorage.getItem('nexus_missions');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                this.activeMissions = progress.active || [];
+                this.completedMissions = progress.completed || [];
+            }
+        } catch (e) {
+            console.warn("Failed to load mission progress:", e);
+        }
+    }
+    
+    getMissionStatus() {
+        return {
+            active: this.activeMissions,
+            completed: this.completedMissions,
+            total: this.missionTemplates.length
+        };
+    }
+}
+
+class TutorialManager {
+    constructor(nexus) {
+        this.nexus = nexus;
+        this.steps = [
+            {
+                title: "BEM-VINDO AO NEXUS",
+                text: "Este é o cockpit de navegação quântica. Você pode explorar 4 campos mitológicos e consultar oráculos.",
+                target: null,
+                position: 'center'
+            },
+            {
+                title: "NAVEGAÇÃO",
+                text: "<strong>Arraste</strong> com o dedo ou mouse para mover sua nave. A velocidade é controlada pela distância do arrasto.",
+                target: '#boardContainer',
+                position: 'top'
+            },
+            {
+                title: "ENTIDADES",
+                text: "Clique em <strong>nós brilhantes</strong> para interagir com deuses e chakras. Eles concedem energia e influência.",
+                target: '.entity-node',
+                position: 'top',
+                multiple: true
+            },
+            {
+                title: "CAMPOS MITOLÓGICOS",
+                text: "Cada quadrante representa uma mitologia. Navegue para ganhar influência em cada uma.",
+                target: '.district-zone',
+                position: 'center',
+                multiple: true
+            },
+            {
+                title: "PAINEL DE DADOS",
+                text: "Aqui você monitora energia, influência e logs do sistema. Toque no ícone <i class='fas fa-chart-pie'></i> para abrir/fechar.",
+                target: '#rightPanel',
+                position: 'left'
+            },
+            {
+                title: "ORÁCULO",
+                text: "Use o oráculo para revelar cartas de destino. Cada carta afeta sua energia e consciência.",
+                target: '#btnOraclePanel',
+                position: 'left'
+            },
+            {
+                title: "MENU DO ECOSSISTEMA",
+                text: "Acesse outros projetos do Nexus através do menu no canto superior esquerdo.",
+                target: '#menuIcon',
+                position: 'right'
+            },
+            {
+                title: "TUTORIAL CONCLUÍDO",
+                text: "Agora você está pronto para explorar o Nexus. Lembre-se: o destino é fluido como o campo quântico.",
+                target: null,
+                position: 'center'
+            }
+        ];
+        
+        this.currentStep = 0;
+        this.isActive = false;
+        this.init();
+    }
+    
+    init() {
+        this.overlay = document.getElementById('tutorialOverlay');
+        this.highlight = document.getElementById('tutorialHighlight');
+        this.textEl = document.getElementById('tutorialText');
+        this.stepEl = document.getElementById('tutorialStep');
+        
+        document.getElementById('tutorialPrev').addEventListener('click', () => this.prev());
+        document.getElementById('tutorialNext').addEventListener('click', () => this.next());
+        document.getElementById('tutorialSkip').addEventListener('click', () => this.complete());
+        document.getElementById('tutorialReopen').addEventListener('click', () => this.start());
+        
+        if (!localStorage.getItem('nexus_tutorial_completed')) {
+            setTimeout(() => this.start(), 1500);
+        }
+    }
+    
+    start() {
+        this.isActive = true;
+        this.currentStep = 0;
+        this.overlay.classList.add('active');
+        this.showStep(0);
+        
+        this.nexus.universe.throttle = 0;
+        document.getElementById('playerVehicle').classList.remove('driving');
+    }
+    
+    showStep(index) {
+        if (index < 0 || index >= this.steps.length) return;
+        
+        this.currentStep = index;
+        const step = this.steps[index];
+        
+        document.querySelector('.tutorial-header h3').innerHTML = `<i class="fas fa-graduation-cap"></i> ${step.title}`;
+        this.textEl.innerHTML = step.text;
+        this.stepEl.textContent = `${index + 1}/${this.steps.length}`;
+        
+        document.getElementById('tutorialPrev').style.display = index === 0 ? 'none' : 'flex';
+        document.getElementById('tutorialNext').innerHTML = index === this.steps.length - 1 
+            ? 'Começar Jornada <i class="fas fa-rocket"></i>' 
+            : 'Próximo <i class="fas fa-arrow-right"></i>';
+        
+        if (step.target) {
+            let targetElement;
+            if (step.multiple) {
+                const elements = document.querySelectorAll(step.target);
+                targetElement = elements.length > 0 ? elements[0] : null;
+            } else {
+                targetElement = document.querySelector(step.target);
+            }
+            
+            if (targetElement) {
+                const rect = targetElement.getBoundingClientRect();
+                this.highlight.style.width = `${rect.width + 20}px`;
+                this.highlight.style.height = `${rect.height + 20}px`;
+                this.highlight.style.left = `${rect.left - 10}px`;
+                this.highlight.style.top = `${rect.top - 10}px`;
+                this.highlight.style.display = 'block';
+                
+                this.positionModal(step.position, rect);
+            } else {
+                this.highlight.style.display = 'none';
+                this.centerModal();
+            }
+        } else {
+            this.highlight.style.display = 'none';
+            this.centerModal();
+        }
+    }
+    
+    positionModal(position, targetRect) {
+        const modal = document.querySelector('.tutorial-content');
+        const modalRect = modal.getBoundingClientRect();
+        const padding = 20;
+        
+        switch(position) {
+            case 'top':
+                modal.style.left = `${targetRect.left + targetRect.width/2 - modalRect.width/2}px`;
+                modal.style.top = `${targetRect.top - modalRect.height - padding}px`;
+                break;
+            case 'bottom':
+                modal.style.left = `${targetRect.left + targetRect.width/2 - modalRect.width/2}px`;
+                modal.style.top = `${targetRect.bottom + padding}px`;
+                break;
+            case 'left':
+                modal.style.left = `${targetRect.left - modalRect.width - padding}px`;
+                modal.style.top = `${targetRect.top + targetRect.height/2 - modalRect.height/2}px`;
+                break;
+            case 'right':
+                modal.style.left = `${targetRect.right + padding}px`;
+                modal.style.top = `${targetRect.top + targetRect.height/2 - modalRect.height/2}px`;
+                break;
+        }
+        
+        let left = parseInt(modal.style.left);
+        let top = parseInt(modal.style.top);
+        
+        if (left < padding) modal.style.left = `${padding}px`;
+        if (top < padding) modal.style.top = `${padding}px`;
+        if (left + modalRect.width > window.innerWidth - padding) {
+            modal.style.left = `${window.innerWidth - modalRect.width - padding}px`;
+        }
+        if (top + modalRect.height > window.innerHeight - padding) {
+            modal.style.top = `${window.innerHeight - modalRect.height - padding}px`;
+        }
+    }
+    
+    centerModal() {
+        const modal = document.querySelector('.tutorial-content');
+        modal.style.left = '50%';
+        modal.style.top = '50%';
+        modal.style.transform = 'translate(-50%, -50%)';
+    }
+    
+    next() {
+        if (this.currentStep < this.steps.length - 1) {
+            this.showStep(this.currentStep + 1);
+        } else {
+            this.complete();
+        }
+    }
+    
+    prev() {
+        if (this.currentStep > 0) {
+            this.showStep(this.currentStep - 1);
+        }
+    }
+    
+    complete() {
+        this.isActive = false;
+        this.overlay.classList.remove('active');
+        localStorage.setItem('nexus_tutorial_completed', 'true');
+        this.nexus.ui.log("Tutorial concluído. Boa jornada, viajante quântico!");
+        this.nexus.ui.showTransmission("SYSTEM", "Sistemas de aprendizagem concluídos. O Nexus está à sua disposição.");
+    }
+}
 
 class UniverseState {
     constructor() {
@@ -38,6 +420,8 @@ class UniverseState {
             egyptian: { speed: 0.6, energyCost: 0.5, oracleWeight: 3, stability: 1.0 },
             celtic: { speed: 1.0, energyCost: 1.0, oracleWeight: 0.5, stability: 0.7 }
         };
+        
+        this.missions = new MissionSystem(this);
     }
 
     getCurrentField(pos) {
@@ -91,6 +475,8 @@ class UniverseState {
             time: Date.now(),
             pos: { ...this.position }
         });
+        
+        this.missions.updateProgress('field_change', { field: this.field });
     }
 
     getFieldColor(field) {
@@ -238,6 +624,30 @@ class OracleEngine {
                     meaning: "A luz que atravessa a noite mais densa.",
                     effect: { q: 60, c: 60 },
                     symbol: "💫"
+                },
+                { 
+                    name: "O Eremita", 
+                    meaning: "A luz que se busca no interior. O silêncio que ensina.",
+                    effect: { q: 40, c: 80 },
+                    symbol: "🕯️"
+                },
+                { 
+                    name: "A Roda da Fortuna", 
+                    meaning: "O ciclo que gira sem cessar. A sorte que vem e vai.",
+                    effect: { q: Math.random() > 0.5 ? 120 : -80, c: 30 },
+                    symbol: "🔄"
+                },
+                { 
+                    name: "A Força", 
+                    meaning: "O poder que vem da compaixão. O domar sem quebrar.",
+                    effect: { q: 70, c: 50 },
+                    symbol: "🦁"
+                },
+                { 
+                    name: "O Julgamento", 
+                    meaning: "O chamado para renascer. O despertar após o sono.",
+                    effect: { q: 60, c: 90 },
+                    symbol: "⚖️"
                 }
             ],
             norse: [
@@ -258,6 +668,18 @@ class OracleEngine {
                     meaning: "O tear que tece destinos. O fio invisível.",
                     effect: { q: 30, c: 40 }, 
                     symbol: "🧵"
+                },
+                { 
+                    name: "Loki", 
+                    meaning: "O fogo que brinca com a ordem. O caos que desata nós.",
+                    effect: { q: -100, c: 150 }, 
+                    symbol: "🔥"
+                },
+                { 
+                    name: "Freya", 
+                    meaning: "O amor que transcende mundos. A beleza que é poder.",
+                    effect: { q: 80, c: 70 }, 
+                    symbol: "💖"
                 }
             ],
             greek: [
@@ -278,6 +700,18 @@ class OracleEngine {
                     meaning: "A luz que revela e cura. A música que acalma.",
                     effect: { q: 90, c: 30 }, 
                     symbol: "☀️"
+                },
+                { 
+                    name: "Hades", 
+                    meaning: "O reino das sombras e riquezas. O que está abaixo sustenta o que está acima.",
+                    effect: { q: 150, c: -50 }, 
+                    symbol: "⚰️"
+                },
+                { 
+                    name: "Afrodite", 
+                    meaning: "A atração que move mundos. O desejo que é criação.",
+                    effect: { q: 50, c: 100 }, 
+                    symbol: "💘"
                 }
             ],
             egyptian: [
@@ -298,6 +732,18 @@ class OracleEngine {
                     meaning: "A morte que é apenas porta.",
                     effect: { q: 60, c: 60 }, 
                     symbol: "☥"
+                },
+                { 
+                    name: "Anúbis", 
+                    meaning: "O guardião da passagem. O peso da verdade na balança.",
+                    effect: { q: 90, c: 60 }, 
+                    symbol: "🐺"
+                },
+                { 
+                    name: "Hórus", 
+                    meaning: "O olho que tudo vê. A justiça que vem das alturas.",
+                    effect: { q: 110, c: 40 }, 
+                    symbol: "👁️"
                 }
             ],
             celtic: [
@@ -318,6 +764,18 @@ class OracleEngine {
                     meaning: "O fogo que aquece e inspira.",
                     effect: { q: 50, c: 40 }, 
                     symbol: "🔥"
+                },
+                { 
+                    name: "Cernunnos", 
+                    meaning: "O senhor dos animais. A natureza selvagem que renasce.",
+                    effect: { q: 70, c: 80 }, 
+                    symbol: "🦌"
+                },
+                { 
+                    name: "Epona", 
+                    meaning: "A deusa cavalo que leva à terra prometida. A jornada é o destino.",
+                    effect: { q: 60, c: 90 }, 
+                    symbol: "🐎"
                 }
             ]
         };
@@ -405,6 +863,7 @@ class UIManager {
         this.updatePhase();
         this.checkCriticalEnergy();
         this.cleanMicroFeedbacks();
+        this.updateMissions();
     }
 
     updatePosition() {
@@ -477,6 +936,50 @@ class UIManager {
         } else if (!critical && document.body.classList.contains('critical-energy')) {
             document.body.classList.remove('critical-energy');
         }
+    }
+
+    updateMissions() {
+        const missionsList = document.getElementById('missionsList');
+        const missionCount = document.getElementById('missionCount');
+        
+        if (!missionsList) return;
+        
+        const status = this.universe.missions.getMissionStatus();
+        missionCount.textContent = `${status.completed.length}/${status.total}`;
+        
+        let html = '';
+        
+        status.active.forEach(mission => {
+            const progress = Math.min(100, (mission.progress / mission.target) * 100);
+            
+            html += `
+                <div class="mission-item">
+                    <div class="mission-header">
+                        <span class="mission-icon">${mission.icon}</span>
+                        <span class="mission-title">${mission.title}</span>
+                        <span class="mission-progress">${mission.progress}/${mission.target}</span>
+                    </div>
+                    <div class="mission-description">${mission.description}</div>
+                    <div class="mission-bar">
+                        <div class="mission-fill" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        if (status.active.length === 0) {
+            html += `
+                <div class="mission-item completed">
+                    <div class="mission-header">
+                        <span class="mission-icon">🏆</span>
+                        <span class="mission-title">TODAS MISSÕES COMPLETADAS</span>
+                    </div>
+                    <div class="mission-description">Continue explorando para novas missões em atualizações futuras.</div>
+                </div>
+            `;
+        }
+        
+        missionsList.innerHTML = html;
     }
 
     showTransmission(source, message) {
@@ -582,7 +1085,6 @@ class UIManager {
         cardEl.classList.remove('unrevealed');
         cardEl.classList.add('flipped');
         
-        // Aplicar efeitos
         const oldQ = this.universe.energy.quantum;
         const oldC = this.universe.energy.consciousness;
         
@@ -591,7 +1093,6 @@ class UIManager {
         
         const deltaQ = this.universe.energy.quantum - oldQ;
         
-        // Efeitos visuais baseados no tipo de carta
         if (deltaQ > 0) {
             cardEl.style.borderColor = '#00ffaa';
             cardEl.style.boxShadow = '0 0 25px rgba(0, 255, 170, 0.4)';
@@ -603,20 +1104,16 @@ class UIManager {
             cardEl.style.boxShadow = '0 0 25px rgba(157, 78, 221, 0.4)';
         }
         
-        // Adicionar aos revelados
         this.revealedCards.push({
             card: card,
             index: index
         });
         
-        // Atualizar interpretação
         this.updateInterpretation();
         
-        // Feedback visual
         const color = deltaQ > 0 ? '#00ffaa' : (deltaQ < 0 ? '#ff5555' : '#9d4edd');
         this.createMicroFeedback(cardEl, '⚡', color);
         
-        // Log poético
         const logMessages = [
             `O oráculo revela: ${card.name}`,
             `${card.name} manifesta-se`,
@@ -672,7 +1169,6 @@ class UIManager {
             `;
         });
         
-        // Mostrar estatísticas se todas as cartas foram reveladas
         if (this.revealedCards.length === 3) {
             const totalQ = this.revealedCards.reduce((sum, r) => sum + r.card.effect.q, 0);
             const totalC = this.revealedCards.reduce((sum, r) => sum + r.card.effect.c, 0);
@@ -717,6 +1213,8 @@ class UIManager {
         footer.textContent = `ID: ${data.id || 'ENTITY'} // NEXUS.REF`;
         
         modal.classList.add('active');
+        
+        this.universe.missions.updateProgress('entity_interact');
     }
 
     log(message) {
@@ -809,6 +1307,7 @@ class NexusCore {
         this.movement = new MovementEngine(this.universe);
         this.oracle = new OracleEngine(this.universe);
         this.ui = new UIManager(this);
+        this.tutorial = new TutorialManager(this);
         
         this.isDragging = false;
         this.touchStart = null;
@@ -1238,6 +1737,7 @@ class NexusCore {
         this.ui.showOracle(cards);
         
         this.ui.log(`Oracle engaged in ${this.universe.field} field.`);
+        this.universe.missions.updateProgress('oracle_use');
     }
 
     drawTriple() {
@@ -1249,7 +1749,6 @@ class NexusCore {
         this.universe.consumeEnergy(50, 'quantum');
         const cards = this.oracle.drawTriple();
         
-        // Revelar todas as três cartas automaticamente
         setTimeout(() => {
             cards.forEach((card, i) => {
                 const cardEl = document.querySelector(`.oracle-card[data-index="${i}"]`);

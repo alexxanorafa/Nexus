@@ -117,6 +117,169 @@ html, body {
 }
 
 /* ====================
+   TUTORIAL SYSTEM
+   ==================== */
+.tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 5, 8, 0.95);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.tutorial-overlay.active {
+    display: flex;
+    animation: fadeIn 0.5s var(--ease-smooth);
+}
+
+.tutorial-highlight {
+    position: absolute;
+    border: 3px solid var(--neon-cyan);
+    border-radius: 12px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7),
+                0 0 30px var(--neon-cyan),
+                inset 0 0 20px rgba(0, 243, 255, 0.3);
+    z-index: 10000;
+    pointer-events: none;
+    transition: all 0.5s var(--ease-smooth);
+}
+
+.tutorial-content {
+    background: rgba(15, 17, 22, 0.98);
+    border: 2px solid var(--neon-cyan);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    z-index: 10001;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7),
+                0 0 0 1px rgba(0, 243, 255, 0.1);
+    overflow: hidden;
+}
+
+.tutorial-header {
+    padding: 20px 25px;
+    background: linear-gradient(90deg, rgba(0, 243, 255, 0.1) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(0, 243, 255, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tutorial-header h3 {
+    font-family: var(--font-mono);
+    color: var(--neon-cyan);
+    font-size: 18px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tutorial-header span {
+    font-family: var(--font-mono);
+    color: var(--ui-dim);
+    font-size: 14px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 243, 255, 0.2);
+}
+
+.tutorial-body {
+    padding: 30px 25px;
+    color: var(--ui-bright);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+}
+
+.tutorial-body p {
+    margin: 0;
+}
+
+.tutorial-footer {
+    padding: 20px 25px;
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tutorial-btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-smooth);
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.tutorial-btn.primary {
+    background: var(--neon-cyan);
+    color: #000;
+    border-color: var(--neon-cyan);
+}
+
+.tutorial-btn.primary:hover {
+    background: rgba(0, 243, 255, 0.9);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.tutorial-btn.secondary {
+    background: transparent;
+    border-color: var(--ui-dim);
+    color: var(--ui-dim);
+}
+
+.tutorial-btn.secondary:hover {
+    border-color: var(--neon-cyan);
+    color: var(--neon-cyan);
+    background: rgba(0, 243, 255, 0.05);
+}
+
+.tutorial-reopen {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(157, 78, 221, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 5px 20px rgba(157, 78, 221, 0.4);
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.tutorial-reopen:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 8px 30px rgba(157, 78, 221, 0.6);
+}
+
+/* ====================
    COCKPIT GRID LAYOUT
    ==================== */
 .cockpit-grid-container {
@@ -573,7 +736,7 @@ html, body {
 }
 
 /* ====================
-   ORACLE OVERLAY (ATUALIZADO)
+   ORACLE OVERLAY
    ==================== */
 .oracle-overlay {
     position: fixed;
@@ -620,7 +783,7 @@ html, body {
     letter-spacing: 1px;
 }
 
-/* ÁREA DE EXIBIÇÃO DAS CARTAS - ATUALIZADA */
+/* ÁREA DE EXIBIÇÃO DAS CARTAS */
 .card-display-area {
     display: flex;
     gap: 30px;
@@ -631,13 +794,13 @@ html, body {
     align-items: center;
 }
 
-/* CARTAS DO ORÁCULO - DESIGN QUÂNTICO MELHORADO */
+/* CARTAS DO ORÁCULO */
 .oracle-card {
-    width: 140px; /* Ligeiramente maior */
-    height: 210px; /* Ligeiramente maior */
+    width: 140px;
+    height: 210px;
     border: 2px solid var(--neon-purple);
     background: rgba(157, 78, 221, 0.05);
-    border-radius: 12px; /* Bordas mais suaves */
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -649,7 +812,6 @@ html, body {
     overflow: hidden;
 }
 
-/* Efeito de partículas quânticas na carta */
 .oracle-card::before {
     content: '';
     position: absolute;
@@ -728,7 +890,7 @@ html, body {
     50% { opacity: 1; }
 }
 
-/* LADO DE TRÁS - COMPLETAMENTE REFEITO */
+/* LADO DE TRÁS */
 .oracle-card .card-back {
     position: absolute;
     width: 100%;
@@ -748,7 +910,6 @@ html, body {
     box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
 }
 
-/* Efeito de partículas desenhando o título */
 .oracle-card.flipped .card-back::before {
     content: '';
     position: absolute;
@@ -786,7 +947,6 @@ html, body {
     }
 }
 
-/* NOME DA CARTA - EFEITO QUÂNTICO */
 .card-back .card-name {
     font-family: var(--font-mono);
     color: var(--neon-purple);
@@ -821,7 +981,6 @@ html, body {
     }
 }
 
-/* SIGNIFICADO DA CARTA - MELHOR ALINHAMENTO */
 .card-back .card-meaning {
     color: var(--ui-bright);
     font-size: 13px;
@@ -844,7 +1003,6 @@ html, body {
     overflow-y: auto;
 }
 
-/* Barra de scroll personalizada para o significado */
 .card-back .card-meaning::-webkit-scrollbar {
     width: 2px;
 }
@@ -860,11 +1018,6 @@ html, body {
 }
 
 /* ÁREA DE INTERPRETAÇÃO */
-/* ... (mantenha todo o CSS anterior até a seção ORACLE OVERLAY) ... */
-
-/* ====================
-   INTERPRETAÇÃO DAS CARTAS - ATUALIZADO
-   ==================== */
 .card-interpretation {
     max-width: 700px;
     text-align: center;
@@ -992,7 +1145,6 @@ html, body {
     text-align: center;
 }
 
-/* Scrollbar personalizada para a área de interpretação */
 .card-interpretation::-webkit-scrollbar {
     width: 4px;
 }
@@ -1005,50 +1157,6 @@ html, body {
 .card-interpretation::-webkit-scrollbar-thumb {
     background: var(--neon-purple);
     border-radius: 2px;
-}
-
-/* ... (mantenha o resto do CSS igual ao anterior) ... */
-
-/* ====================
-   MOBILE RESPONSIVE - ATUALIZADO
-   ==================== */
-@media (max-width: 768px) {
-    /* ... (mantenha todas as outras regras mobile anteriores) ... */
-    
-    /* Ajustes para interpretação em mobile */
-    .card-interpretation {
-        max-height: 150px;
-        padding: 10px 15px;
-        margin: 20px 0;
-    }
-    
-    .interpretation-title {
-        font-size: 14px;
-        margin-bottom: 10px;
-    }
-    
-    .interpretation-header .card-name {
-        font-size: 14px;
-    }
-    
-    .interpretation-meaning {
-        font-size: 12px;
-        padding-left: 28px;
-    }
-    
-    .card-number {
-        width: 20px;
-        height: 20px;
-        font-size: 11px;
-    }
-    
-    .summary-text {
-        font-size: 12px;
-    }
-    
-    .summary-hint {
-        font-size: 11px;
-    }
 }
 
 /* CONTROLES DO ORÁCULO */
@@ -1165,6 +1273,120 @@ html, body {
     font-size: 11px;
     color: var(--ui-dim);
     letter-spacing: 1px;
+}
+
+/* ====================
+   MISSÕES
+   ==================== */
+.mission-count {
+    float: right;
+    font-size: 11px;
+    color: var(--neon-purple);
+    background: rgba(157, 78, 221, 0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(157, 78, 221, 0.3);
+}
+
+.missions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.mission-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.mission-item:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 243, 255, 0.05);
+}
+
+.mission-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.mission-icon {
+    font-size: 16px;
+    color: var(--neon-yellow);
+}
+
+.mission-title {
+    font-family: var(--font-mono);
+    color: var(--ui-bright);
+    font-size: 12px;
+    flex: 1;
+}
+
+.mission-progress {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--neon-green);
+    background: rgba(0, 255, 170, 0.1);
+    padding: 2px 6px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 255, 170, 0.2);
+}
+
+.mission-description {
+    font-size: 11px;
+    color: var(--ui-dim);
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.mission-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.mission-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+}
+
+.mission-item.completed {
+    border-color: var(--neon-green);
+    background: rgba(0, 255, 170, 0.05);
+}
+
+.mission-item.completed .mission-title {
+    color: var(--neon-green);
+}
+
+.mission-item.completed .mission-progress {
+    color: #000;
+    background: var(--neon-green);
+}
+
+.missions-list::-webkit-scrollbar {
+    width: 3px;
+}
+
+.missions-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+.missions-list::-webkit-scrollbar-thumb {
+    background: var(--neon-purple);
+    border-radius: 3px;
 }
 
 /* ====================
@@ -1675,6 +1897,70 @@ html, body {
     
     .tx-content p {
         font-size: 13px;
+    }
+    
+    /* Ajustes para interpretação em mobile */
+    .card-interpretation {
+        max-height: 150px;
+        padding: 10px 15px;
+        margin: 20px 0;
+    }
+    
+    .interpretation-title {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    
+    .interpretation-header .card-name {
+        font-size: 14px;
+    }
+    
+    .interpretation-meaning {
+        font-size: 12px;
+        padding-left: 28px;
+    }
+    
+    .card-number {
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
+    }
+    
+    .summary-text {
+        font-size: 12px;
+    }
+    
+    .summary-hint {
+        font-size: 11px;
+    }
+    
+    /* Tutorial mobile adjustments */
+    .tutorial-content {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .tutorial-body {
+        padding: 20px;
+        font-size: 15px;
+        min-height: 100px;
+    }
+    
+    .tutorial-footer {
+        flex-direction: column;
+    }
+    
+    .tutorial-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .tutorial-reopen {
+        bottom: 70px;
+        right: 15px;
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
     }
 }
 
