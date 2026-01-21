@@ -1,6 +1,6 @@
 /**
- * NEXUS 2126 - CORE ENGINE V3.0
- * Sistema Unificado com Memória, Progressão e Feedback Poético
+ * NEXUS 2126 - CORE ENGINE V3.2
+ * Sistema com Cartas Corrigidas e Revelação Individual
  */
 
 class UniverseState {
@@ -196,13 +196,6 @@ class MovementEngine {
         return this.lastVector;
     }
 }
-
-/**
- * NEXUS 2126 - CORE ENGINE V3.1
- * Sistema com Cartas Otimizadas e Efeitos Quânticos
- */
-
-// ... (mantenha todo o código anterior até a classe OracleEngine)
 
 class OracleEngine {
     constructor(universe) {
@@ -401,6 +394,8 @@ class UIManager {
         this.nexus = nexus;
         this.universe = nexus.universe;
         this.microFeedbacks = [];
+        this.currentOracleCards = [];
+        this.revealedCards = [];
     }
 
     update() {
@@ -542,6 +537,9 @@ class UIManager {
             drawTypes[field];
         
         display.innerHTML = '';
+        this.currentOracleCards = [...cards];
+        this.revealedCards = [];
+        
         cards.forEach((card, index) => {
             const cardEl = document.createElement('div');
             cardEl.className = 'oracle-card unrevealed';
@@ -559,7 +557,7 @@ class UIManager {
                 </div>
             `;
             
-            cardEl.addEventListener('click', () => this.revealCard(cardEl, card));
+            cardEl.addEventListener('click', () => this.revealCard(cardEl, card, index));
             display.appendChild(cardEl);
         });
         
@@ -574,16 +572,17 @@ class UIManager {
             base: 'O campo quântico colapsa...'
         };
         
-        document.getElementById('destinyText').textContent = 
-            arrivalMessages[field];
+        document.getElementById('destinyText').innerHTML = 
+            `<div class="interpretation-title">${arrivalMessages[field]}</div>`;
     }
 
-    revealCard(cardEl, card) {
+    revealCard(cardEl, card, index) {
         if (cardEl.classList.contains('flipped')) return;
         
         cardEl.classList.remove('unrevealed');
         cardEl.classList.add('flipped');
         
+        // Aplicar efeitos
         const oldQ = this.universe.energy.quantum;
         const oldC = this.universe.energy.consciousness;
         
@@ -604,18 +603,14 @@ class UIManager {
             cardEl.style.boxShadow = '0 0 25px rgba(157, 78, 221, 0.4)';
         }
         
-        // Texto de interpretação com base no campo
-        const field = this.universe.field || 'base';
-        const interpretations = {
-            norse: `${card.name}: ${card.meaning}`,
-            greek: `${card.name}: ${card.meaning}`,
-            egyptian: `${card.name}: ${card.meaning}`,
-            celtic: `${card.name}: ${card.meaning}`,
-            base: `${card.name}: ${card.meaning}`
-        };
+        // Adicionar aos revelados
+        this.revealedCards.push({
+            card: card,
+            index: index
+        });
         
-        document.getElementById('destinyText').textContent = 
-            interpretations[field];
+        // Atualizar interpretação
+        this.updateInterpretation();
         
         // Feedback visual
         const color = deltaQ > 0 ? '#00ffaa' : (deltaQ < 0 ? '#ff5555' : '#9d4edd');
@@ -632,9 +627,76 @@ class UIManager {
         this.log(logMessages[Math.floor(Math.random() * logMessages.length)]);
     }
 
+    updateInterpretation() {
+        const interpretationEl = document.getElementById('destinyText');
+        
+        if (this.revealedCards.length === 0) {
+            const field = this.universe.field || 'base';
+            const arrivalMessages = {
+                norse: 'Os corvos de Odin trazem visões...',
+                greek: 'O néctar do Olimpo revela-se...',
+                egyptian: 'As areias do tempo movem-se...',
+                celtic: 'O véu dos mundos afina-se...',
+                base: 'O campo quântico colapsa...'
+            };
+            
+            interpretationEl.innerHTML = 
+                `<div class="interpretation-title">${arrivalMessages[field]}</div>`;
+            return;
+        }
+        
+        let html = `<div class="interpretation-title">Cartas Reveladas:</div>`;
+        
+        this.revealedCards.forEach((revealed, idx) => {
+            const card = revealed.card;
+            const field = card.field || this.universe.field || 'base';
+            
+            const fieldColors = {
+                norse: '#00f3ff',
+                greek: '#9d4edd',
+                egyptian: '#ffd60a',
+                celtic: '#00ffaa',
+                base: '#ffffff'
+            };
+            
+            const color = fieldColors[field] || '#ffffff';
+            
+            html += `
+                <div class="card-interpretation-item">
+                    <div class="interpretation-header">
+                        <span class="card-number">${idx + 1}</span>
+                        <strong class="card-name" style="color: ${color}">${card.name}</strong>
+                    </div>
+                    <div class="interpretation-meaning">${card.meaning}</div>
+                </div>
+            `;
+        });
+        
+        // Mostrar estatísticas se todas as cartas foram reveladas
+        if (this.revealedCards.length === 3) {
+            const totalQ = this.revealedCards.reduce((sum, r) => sum + r.card.effect.q, 0);
+            const totalC = this.revealedCards.reduce((sum, r) => sum + r.card.effect.c, 0);
+            
+            const effectText = totalQ > 0 ? 
+                `Energia Quântica aumentada.` : 
+                totalQ < 0 ? `Energia Quântica drenada.` : `Equilíbrio mantido.`;
+            
+            html += `
+                <div class="interpretation-summary">
+                    <div class="summary-text">${effectText}</div>
+                    <div class="summary-hint">O destino está selado. Continue sua jornada.</div>
+                </div>
+            `;
+        }
+        
+        interpretationEl.innerHTML = html;
+    }
+
     closeOracle() {
         document.getElementById('oracleDeckOverlay').classList.remove('active');
         document.body.classList.remove('ritual-mode');
+        this.currentOracleCards = [];
+        this.revealedCards = [];
     }
 
     showHoloInfo(data) {
@@ -740,8 +802,6 @@ class UIManager {
         }, 3000);
     }
 }
-
-// ... (mantenha o resto do código do script.js igual ao anterior)
 
 class NexusCore {
     constructor() {
@@ -1189,12 +1249,17 @@ class NexusCore {
         this.universe.consumeEnergy(50, 'quantum');
         const cards = this.oracle.drawTriple();
         
-        cards.forEach((card, i) => {
-            const cardEl = document.querySelector(`.oracle-card[data-index="${i}"]`);
-            if (cardEl) {
-                this.ui.revealCard(cardEl, card);
-            }
-        });
+        // Revelar todas as três cartas automaticamente
+        setTimeout(() => {
+            cards.forEach((card, i) => {
+                const cardEl = document.querySelector(`.oracle-card[data-index="${i}"]`);
+                if (cardEl) {
+                    setTimeout(() => {
+                        this.ui.revealCard(cardEl, card, i);
+                    }, i * 500);
+                }
+            });
+        }, 500);
     }
 
     closeOracle() {
