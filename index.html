@@ -2,186 +2,229 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS 2126 | QUANTUM COCKPIT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEXUS</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
 </head>
-<body>
-
+<body class="explore-mode">
+    <!-- LOADER -->
     <div class="loader-screen" id="loader">
         <div class="loader-content">
-            <div class="loader-text">INITIALIZING QUANTUM CORE</div>
+            <div class="loader-text" id="bootLog">INITIALIZING QUANTUM CORE</div>
             <div class="loader-bar"><div class="loader-fill" id="bootBar"></div></div>
-            <div class="loader-code" id="bootLog">Loading logic matrix...</div>
         </div>
     </div>
 
+    <!-- BACKGROUND -->
     <canvas id="quantumField"></canvas>
+    <div id="quantumNebula"></div>
 
+    <!-- COCKPIT -->
     <div class="cockpit-grid-container">
-        
+        <!-- TOP BAR -->
         <div class="top-bar">
             <div class="menu-container">
                 <div class="menu-icon" id="menuIcon">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <span></span><span></span><span></span>
                 </div>
-                <div class="brand-text">NEXUS // 2126</div>
+                <div class="brand-text">NEXUS</div>
             </div>
-
-            <div class="global-status">
-                <div class="status-item">POS: <span id="hudPos" class="dynamic-val">7-Ω</span></div>
-                <div class="status-item">GODS: <span id="hudGods" class="dynamic-val">0/12</span></div>
-                <div class="status-item">CYCLE: <span id="hudCycle" class="dynamic-val">ALPHA</span></div>
+            <div class="global-status mobile-hidden">
+                <div class="status-item">POS: <span id="hudPos">T-L-50</span></div>
+                <div class="status-item">PHASE: <span id="phaseDisplay">EXPLORE</span></div>
             </div>
+            <button class="mobile-toggle-btn" id="toggleDataPanel"><i class="fas fa-chart-pie"></i></button>
         </div>
 
+        <!-- ECOSYSTEM MENU -->
         <nav class="ecosystem-overlay" id="ecosystemMenu">
             <div class="ecosystem-header">
-                <h3><i class="fas fa-network-wired"></i> NEXUS ECOSYSTEM</h3>
+                <h3>NEXUS SYSTEM</h3>
                 <button id="closeMenu"><i class="fas fa-times"></i></button>
             </div>
-            <ul class="ecosystem-list">
-                 <li><a href="https://alexxanorafa.github.io/Alquimia-dos-Sentimentos/" class="eco-link" target="_blank">Alquimia dos Sentimentos</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Almas-Conectadas/" class="eco-link" target="_blank">Almas Conectadas</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Aneis_da_Sabedoria/" class="eco-link" target="_blank">Anéis da Sabedoria</a></li>
-                 <li><a href="https://alexxanorafa.github.io/ANIMA/" class="eco-link" target="_blank">ANIMA</a></li>
-                 <li><a href="https://alexxanorafa.github.io/ANIMA-II/" class="eco-link" target="_blank">ANIMA II</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Animais-de-Poder/" class="eco-link" target="_blank">Animais de Poder</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Arvore-da-Vida/" class="eco-link" target="_blank">Árvore da Vida</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Biblioteca-Onirica/" class="eco-link" target="_blank">Biblioteca Onírica</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Buzios/" class="eco-link" target="_blank">Búzios</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Cartas-de-Sibila/" class="eco-link" target="_blank">Cartas de Sibila</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Do-you-love-me/" class="eco-link" target="_blank">Do you love me?</a></li>
-                 <li><a href="https://alexxanorafa.github.io/I-Ching-Virtual/" class="eco-link" target="_blank">I Ching Virtual</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Jogo-Didatico-Banco-de-Dados/" class="eco-link" target="_blank">Jogo Didático BD</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Jornada-Arquetipica/" class="eco-link" target="_blank">Jornada Arquetípica</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Jornadas-Mitologica/" class="eco-link" target="_blank">Jornada Mitológica</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Livro-das-Sombras/" class="eco-link" target="_blank">Livro das Sombras</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Magia-das-Cores/" class="eco-link" target="_blank">Magia das Cores</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Murmurios-do-Destino/" class="eco-link" target="_blank">Murmúrios do Destino</a></li>
-                 <li><a href="https://alexxanorafa.github.io/O-Construtor-do-Destino/" class="eco-link" target="_blank">O Construtor do Destino</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Oraculo-das-Pedras/" class="eco-link" target="_blank">Oráculo das Pedras</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Oraculo-dos-Deuses/" class="eco-link" target="_blank">Oráculo dos Deuses</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Oraculo-Numerologico/" class="eco-link" target="_blank">Oráculo Numerológico</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Pendulo-Divinatorio/" class="eco-link" target="_blank">Pêndulo Divinatório</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Portal-das-Almas/" class="eco-link" target="_blank">Portal das Almas</a></li>
-                 <li><a href="https://alexxanorafa.github.io//PROJECT-AETHER/" class="eco-link" target="_blank">PROJECT AETHER</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Quantum-Oracle/" class="eco-link" target="_blank">Quantum Oracle</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Runas-Celtas/" class="eco-link" target="_blank">Runas Celtas</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Runas-Estelares/" class="eco-link" target="_blank">Runas Estelares</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Runas-do-Destino/" class="eco-link" target="_blank">Runas Nórdicas</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Tabuleiro-Quantico/" class="eco-link" target="_blank">Tabuleiro Quântico</a></li>
-                 <li><a href="https://alexxanorafa.github.io/TarodeMarselha/" class="eco-link" target="_blank">Tarô de Marselha</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Tasseografia/" class="eco-link" target="_blank">Tasseografia</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Tempo_e_Sonhos/" class="eco-link" target="_blank">Tempo e Sonhos</a></li>
-                 <li><a href="https://alexxanorafa.github.io/The-Da-Vinci-Code/" class="eco-link" target="_blank">The Da Vinci Code</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Velvet-Quantum/" class="eco-link" target="_blank">Velvet Quantum</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Vitruvian-Resonance/" class="eco-link" target="_blank">Vitruvian Resonance</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Whispering-Shadows/" class="eco-link" target="_blank">Whispering Shadows</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Whispering-Shadows-2/" class="eco-link" target="_blank">Whispering Shadows 2</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Whispering-Shadows-3/" class="eco-link" target="_blank">Whispering Shadows 3</a></li>
-                 <li><a href="https://alexxanorafa.github.io/Xamanismo-Animal/" class="eco-link" target="_blank">Xamanismo Animal</a></li>
-            </ul>
+            <div class="ecosystem-scroll">
+                <ul class="ecosystem-list">
+                    <li><a href="https://alexxanorafa.github.io/Alquimia-dos-Sentimentos/" class="eco-link" target="_blank">Alquimia dos Sentimentos</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Almas-Conectadas/" class="eco-link" target="_blank">Almas Conectadas</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Aneis_da_Sabedoria/" class="eco-link" target="_blank">Anéis da Sabedoria</a></li>
+                    <li><a href="https://alexxanorafa.github.io/ANIMA/" class="eco-link" target="_blank">ANIMA</a></li>
+                    <li><a href="https://alexxanorafa.github.io/ANIMA-II/" class="eco-link" target="_blank">ANIMA II</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Animais-de-Poder/" class="eco-link" target="_blank">Animais de Poder</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Arvore-da-Vida/" class="eco-link" target="_blank">Árvore da Vida</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Biblioteca-Onirica/" class="eco-link" target="_blank">Biblioteca Onírica</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Buzios/" class="eco-link" target="_blank">Búzios</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Cartas-de-Sibila/" class="eco-link" target="_blank">Cartas de Sibila</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Do-you-love-me/" class="eco-link" target="_blank">Do you love me?</a></li>
+                    <li><a href="https://alexxanorafa.github.io/I-Ching-Virtual/" class="eco-link" target="_blank">I Ching Virtual</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Jogo-Didatico-Banco-de-Dados/" class="eco-link" target="_blank">Jogo Didático BD</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Jornada-Arquetipica/" class="eco-link" target="_blank">Jornada Arquetípica</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Jornadas-Mitologica/" class="eco-link" target="_blank">Jornada Mitológica</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Livro-das-Sombras/" class="eco-link" target="_blank">Livro das Sombras</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Magia-das-Cores/" class="eco-link" target="_blank">Magia das Cores</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Murmurios-do-Destino/" class="eco-link" target="_blank">Murmúrios do Destino</a></li>
+                    <li><a href="https://alexxanorafa.github.io/O-Construtor-do-Destino/" class="eco-link" target="_blank">O Construtor do Destino</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Oraculo-das-Pedras/" class="eco-link" target="_blank">Oráculo das Pedras</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Oraculo-dos-Deuses/" class="eco-link" target="_blank">Oráculo dos Deuses</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Oraculo-Numerologico/" class="eco-link" target="_blank">Oráculo Numerológico</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Pendulo-Divinatorio/" class="eco-link" target="_blank">Pêndulo Divinatório</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Portal-das-Almas/" class="eco-link" target="_blank">Portal das Almas</a></li>
+                    <li><a href="https://alexxanorafa.github.io/PROJECT-AETHER/" class="eco-link" target="_blank">PROJECT AETHER</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Quantum-Oracle/" class="eco-link" target="_blank">Quantum Oracle</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Runas-Celtas/" class="eco-link" target="_blank">Runas Celtas</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Runas-Estelares/" class="eco-link" target="_blank">Runas Estelares</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Runas-do-Destino/" class="eco-link" target="_blank">Runas Nórdicas</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Tabuleiro-Quantico/" class="eco-link" target="_blank">Tabuleiro Quântico</a></li>
+                    <li><a href="https://alexxanorafa.github.io/TarodeMarselha/" class="eco-link" target="_blank">Tarô de Marselha</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Tasseografia/" class="eco-link" target="_blank">Tasseografia</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Tempo_e_Sonhos/" class="eco-link" target="_blank">Tempo e Sonhos</a></li>
+                    <li><a href="https://alexxanorafa.github.io/The-Da-Vinci-Code/" class="eco-link" target="_blank">The Da Vinci Code</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Velvet-Quantum/" class="eco-link" target="_blank">Velvet Quantum</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Vitruvian-Resonance/" class="eco-link" target="_blank">Vitruvian Resonance</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Whispering-Shadows/" class="eco-link" target="_blank">Whispering Shadows</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Whispering-Shadows-2/" class="eco-link" target="_blank">Whispering Shadows 2</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Whispering-Shadows-3/" class="eco-link" target="_blank">Whispering Shadows 3</a></li>
+                    <li><a href="https://alexxanorafa.github.io/Xamanismo-Animal/" class="eco-link" target="_blank">Xamanismo Animal</a></li>
+                </ul>
+            </div>
         </nav>
 
-        <aside class="sidebar-left">
-            <button class="icon-btn active" data-view="board" title="Quantum Board"><i class="fas fa-border-all"></i></button>
-            <button class="icon-btn" data-view="gods" title="Pantheon"><i class="fas fa-landmark"></i></button>
-            <button class="icon-btn" data-view="chakras" title="Chakra System"><i class="fas fa-dharmachakra"></i></button>
-            <div style="flex:1"></div>
-            <button class="icon-btn" id="toggleSound"><i class="fas fa-volume-up"></i></button>
-        </aside>
-
+        <!-- MAIN STAGE -->
         <main class="main-stage" id="mainStage">
-            <div id="boardContainer" class="board-layer">
+            <div class="board-layer" id="boardContainer">
                 <div id="districtLayer"></div>
                 <div id="pathLayer"></div>
                 <div id="entityLayer"></div>
-                <div id="playerVehicle"></div>
-            </div>
-            
-            <div class="holo-modal" id="holoModal">
-                <div class="holo-header">
-                    <h3 id="holoTitle">DATA_TITLE</h3>
-                    <button class="holo-close" id="holoClose"><i class="fas fa-times"></i></button>
+                <div id="playerVehicle">
+                    <div class="vehicle-pulse"></div>
+                    <div class="thruster-flame"></div>
                 </div>
-                <div class="holo-content" id="holoContent"></div>
-                <div class="holo-footer" id="holoFooter"></div>
+            </div>
+
+            <!-- DIVINE TRANSMISSION -->
+            <div id="divineTransmission" class="transmission-ui">
+                <div class="tx-line"></div>
+                <div class="tx-content">
+                    <small>INCOMING SIGNAL...</small>
+                    <h4 id="txGodName">SYSTEM</h4>
+                    <p id="txMessage">"Quantum entanglement detected."</p>
+                </div>
+            </div>
+
+            <!-- ORACLE OVERLAY -->
+            <div id="oracleDeckOverlay" class="oracle-overlay">
+                <div class="deck-header">
+                    <h2 id="currentDeckTitle">ORACLE SYSTEM</h2>
+                    <div id="drawTypeLabel">Tiragem: Três Destinos</div>
+                </div>
+                <div class="card-display-area" id="cardDisplay">
+                    <!-- Cards will be inserted here -->
+                </div>
+                <div class="card-interpretation" id="cardResult">
+                    <p id="destinyText">O teu destino será revelado no colapso da função de onda...</p>
+                </div>
+                <div class="oracle-controls">
+                    <button class="btn-oracle-close" onclick="window.nexus.closeOracle()">VOLTAR AO COCKPIT</button>
+                    <button class="btn-oracle-draw" onclick="window.nexus.drawTriple()">TIRAR TRÊS</button>
+                </div>
+            </div>
+
+            <!-- HOLO MODAL -->
+            <div id="holoModal" class="holo-modal">
+                <div class="holo-header">
+                    <h3 id="holoTitle">ENTITY</h3>
+                    <button id="holoClose"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="holo-content" id="holoContent">
+                    <p>Entity information will appear here.</p>
+                </div>
+                <div class="holo-footer" id="holoFooter">ID: UNKNOWN</div>
             </div>
         </main>
 
-        <aside class="panel-right">
+        <!-- RIGHT PANEL -->
+        <aside class="panel-right" id="rightPanel">
+            <div class="mobile-panel-header">
+                <span>SYSTEM DATA</span>
+                <button id="closeRightPanel"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            
             <div class="data-block">
-                <h4>Quantum Energy (Ω)</h4>
+                <h4>Energy (Ω)</h4>
                 <div class="energy-bar-container">
-                    <div class="bar-track"><div class="bar-fill" id="barQuantum" style="background:var(--neon-cyan); width: 85%"></div></div>
-                    <span id="valQuantum" class="mono-val">1024</span>
+                    <div class="bar-track"><div class="bar-fill" id="barQuantum"></div></div>
+                    <span id="valQuantum" class="mono-val">1000</span>
+                </div>
+            </div>
+            
+            <div class="data-block">
+                <h4>Consciousness</h4>
+                <div class="energy-bar-container">
+                    <div class="bar-track"><div class="bar-fill" id="barConsciousness"></div></div>
+                    <span id="valConsciousness" class="mono-val">200</span>
                 </div>
             </div>
 
             <div class="data-block">
-                <h4>Consciousness (Ψ)</h4>
-                <div class="energy-bar-container">
-                    <div class="bar-track"><div class="bar-fill" id="barConsciousness" style="background:var(--neon-purple); width: 45%"></div></div>
-                    <span id="valConsciousness" class="mono-val">256</span>
+                <h4>Influence</h4>
+                <div class="influence-grid">
+                    <div class="influence-item" data-field="norse">
+                        <span class="influence-label">NÓRDICO</span>
+                        <div class="influence-bar"><div class="influence-fill" id="infNorse"></div></div>
+                    </div>
+                    <div class="influence-item" data-field="greek">
+                        <span class="influence-label">GREGO</span>
+                        <div class="influence-bar"><div class="influence-fill" id="infGreek"></div></div>
+                    </div>
+                    <div class="influence-item" data-field="egyptian">
+                        <span class="influence-label">EGÍPCIO</span>
+                        <div class="influence-bar"><div class="influence-fill" id="infEgyptian"></div></div>
+                    </div>
+                    <div class="influence-item" data-field="celtic">
+                        <span class="influence-label">CELTA</span>
+                        <div class="influence-bar"><div class="influence-fill" id="infCeltic"></div></div>
+                    </div>
                 </div>
             </div>
 
             <div class="data-block">
-                <h4>Active Arcanum</h4>
+                <h4>Oracle</h4>
                 <div class="active-oracle-card" id="activeOracleCard">
-                    <div class="card-icon"><i class="fas fa-question"></i></div>
-                    <div class="card-name">Awaiting Input</div>
+                    <div class="card-icon"><i class="fas fa-dice-d20"></i></div>
+                    <div class="card-name">Ready</div>
                 </div>
+                <button class="oracle-trigger full-width" id="btnOraclePanel">
+                    ENGAGE ORACLE
+                </button>
             </div>
 
-            <div class="data-block" style="flex:1; display:flex; flex-direction:column;">
-                <h4>System Logs</h4>
+            <div class="data-block" style="flex:1">
+                <h4>Logs</h4>
                 <div class="log-feed" id="logFeed"></div>
             </div>
         </aside>
 
+        <!-- CONTROL DOCK -->
         <footer class="control-dock">
-            <div class="dock-section left">
-                <button class="ctrl-btn" id="btnMode" title="Switch Mode">
-                    <i class="fas fa-random"></i>
-                    <span class="btn-label" id="modeLabel">NAV</span>
-                </button>
+            <div class="dock-info">
+                <span id="velocityDisplay">SPD: 0%</span>
+                <span id="fieldDisplay">FIELD: NONE</span>
             </div>
-
-            <div class="dock-section center">
-                <button class="ctrl-btn" id="btnBrake" title="Stabilize/Pause">
+            
+            <div class="dock-controls">
+                <button class="fab-action" id="btnOracleMobile">
+                    <i class="fas fa-dice-d20"></i>
+                </button>
+                <button class="fab-action secondary" id="btnPause">
                     <i class="fas fa-pause"></i>
                 </button>
-                
-                <div class="throttle-system">
-                    <div class="throttle-track">
-                        <div class="throttle-fill" id="throttleFill"></div>
-                    </div>
-                    <div class="throttle-val" id="throttleVal">0%</div>
-                </div>
-
-                <button class="ctrl-btn primary" id="btnAccel" title="Accelerate">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
             </div>
-
-            <div class="dock-section right">
-                <button class="oracle-trigger" id="btnOracle">
-                    <div class="trigger-content">
-                        <i class="fas fa-dice-d20"></i>
-                        <span>ENGAGE ORACLE</span>
-                    </div>
-                    <div class="trigger-bg"></div>
-                </button>
-            </div>
+            
+            <div class="dock-hint">DRAG SCREEN TO DRIVE</div>
         </footer>
-
     </div>
 
     <script src="script.js"></script>
