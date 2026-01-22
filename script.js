@@ -3,7 +3,6 @@
  * Sistema completo com Tutorial, Missões, Cartas Expandidas e UPGRADE
  */
 
-// ==================== SISTEMA DE UPGRADE ====================
 // Clear problematic saved states on load
 try {
     localStorage.removeItem('nexus_upgrade_state');
@@ -12,6 +11,9 @@ try {
 } catch (e) {
     console.log("Cleanup completed");
 }
+
+// ==================== SISTEMA DE UPGRADE ====================
+
 class QuantumUpgradeSystem {
     constructor(nexus) {
         this.nexus = nexus;
@@ -172,7 +174,7 @@ class QuantumUpgradeSystem {
             }
 
             this.nexus.ui.showTransmission("CHAKRA SYSTEM", 
-                `${this.chakras[chakra].name} alcançou nível ${this.chakras[chakra].level}!`);
+                `${this.chakras[chakra].name} alcançou nível ${this.chakras[chakra].level}!`, 3000);
             return true;
         }
 
@@ -182,7 +184,7 @@ class QuantumUpgradeSystem {
     unlockChakra(chakra) {
         if (this.chakras[chakra]) {
             this.chakras[chakra].unlocked = true;
-            this.nexus.ui.log(`Chakra ${this.chakras[chakra].name} desbloqueado!`);
+            this.nexus.ui.log(`Chakra ${this.chakras[chakra].name} desbloqueado!`, 'success');
             
             // Criar efeito visual
             const effect = document.createElement('div');
@@ -321,7 +323,7 @@ class QuantumUpgradeSystem {
             this.addMythologyEntities(mythology);
             
             this.nexus.ui.showTransmission("MYTHOLOGY EXPANSION", 
-                `${this.expandedMythologies[mythology].name} desbloqueada!`);
+                `${this.expandedMythologies[mythology].name} desbloqueada!`, 3500);
         }
     }
 
@@ -375,7 +377,7 @@ class QuantumUpgradeSystem {
             this.nexus.universe.addEnergy(100, 'consciousness');
             
             this.nexus.ui.showTransmission(myth.name.toUpperCase(), 
-                `Nível ${myth.level} alcançado!`);
+                `Nível ${myth.level} alcançado!`, 3000);
         }
     }
 
@@ -423,7 +425,7 @@ class QuantumUpgradeSystem {
                 this.createPortalElement(portalId);
                 
                 this.nexus.ui.showTransmission("PORTAL SYSTEM", 
-                    `${this.portals[portalId].name} ativado!`);
+                    `${this.portals[portalId].name} ativado!`, 3000);
                 return true;
             }
         }
@@ -457,7 +459,7 @@ class QuantumUpgradeSystem {
         if (!portal.unlocked) return;
         
         this.nexus.ui.showTransmission("PORTAL ACTIVATION", 
-            `Acessando ${portal.name}... ${portal.effect}`);
+            `Acessando ${portal.name}... ${portal.effect}`, 4000);
         
         // Efeitos específicos do portal
         switch(portalId) {
@@ -516,7 +518,7 @@ class QuantumUpgradeSystem {
         ];
         
         const card = specialCards[Math.floor(Math.random() * specialCards.length)];
-        this.nexus.ui.showTransmission("QUANTUM COLLAPSE", card.meaning);
+        this.nexus.ui.showTransmission("QUANTUM COLLAPSE", card.meaning, 4500);
         
         // Aplicar efeito
         this.nexus.universe.addEnergy(card.effect.q, 'quantum');
@@ -573,7 +575,7 @@ class QuantumUpgradeSystem {
         this.artifactSpawns.push(artifact);
         
         this.lastArtifactSpawn = now;
-        this.nexus.ui.log(`Artefato ${type} apareceu no campo quântico.`);
+        this.nexus.ui.log(`Artefato ${type} apareceu no campo quântico.`, 'info');
     }
 
     getArtifactColor(type) {
@@ -623,7 +625,7 @@ class QuantumUpgradeSystem {
             this.getArtifactColor(artifact.type)
         );
         
-        this.nexus.ui.log(`Artefato ${artifact.type} coletado! Total: ${this.artifacts[artifact.type].collected}/${this.artifacts[artifact.type].total}`);
+        this.nexus.ui.log(`Artefato ${artifact.type} coletado! Total: ${this.artifacts[artifact.type].collected}/${this.artifacts[artifact.type].total}`, 'success');
         
         // Verificar se completou a coleção
         if (this.artifacts[artifact.type].collected >= this.artifacts[artifact.type].total) {
@@ -633,7 +635,7 @@ class QuantumUpgradeSystem {
 
     completeArtifactCollection(type) {
         this.nexus.ui.showTransmission("ARTIFACT SYSTEM", 
-            `Coleção ${type} completa! Recompensa especial desbloqueada.`);
+            `Coleção ${type} completa! Recompensa especial desbloqueada.`, 4000);
         
         // Recompensa especial
         this.nexus.universe.addEnergy(1000, 'quantum');
@@ -654,7 +656,7 @@ class QuantumUpgradeSystem {
     }
 
     unlockSpecialReading(type) {
-        this.nexus.ui.log(`Leitura especial ${type} desbloqueada!`);
+        this.nexus.ui.log(`Leitura especial ${type} desbloqueada!`, 'oracle');
     }
 
     // ==================== INTERFACE DE UPGRADE ====================
@@ -918,39 +920,38 @@ class QuantumUpgradeSystem {
     }
 
     // ==================== INTEGRAÇÃO COM SISTEMAS EXISTENTES ====================
-// ==================== INTEGRAÇÃO COM SISTEMAS EXISTENTES ====================
-        integrateWithExistingSystems() {
-            // Save references to original methods
-            const originalAddInfluence = this.nexus.universe.addInfluence.bind(this.nexus.universe);
-            const originalDraw = this.nexus.oracle.draw.bind(this.nexus.oracle);
+    integrateWithExistingSystems() {
+        // Save references to original methods
+        const originalAddInfluence = this.nexus.universe.addInfluence.bind(this.nexus.universe);
+        const originalDraw = this.nexus.oracle.draw.bind(this.nexus.oracle);
+        
+        // Override addInfluence
+        this.nexus.universe.addInfluence = (field, amount = 1) => {
+            // Call original function
+            const result = originalAddInfluence(field, amount);
             
-            // Override addInfluence
-            this.nexus.universe.addInfluence = (field, amount = 1) => {
-                // Call original function
-                const result = originalAddInfluence(field, amount);
-                
-                // Add progress to expanded mythology if applicable
-                if (this.expandedMythologies[field]) {
-                    this.addMythologyProgress(field, amount * 0.5);
-                }
-                
-                return result;
-            };
+            // Add progress to expanded mythology if applicable
+            if (this.expandedMythologies[field]) {
+                this.addMythologyProgress(field, amount * 0.5);
+            }
             
-            // Override oracle draw
-            this.nexus.oracle.draw = (field = null) => {
-                const card = originalDraw(field);
-                
-                // Apply chakra modifiers
-                if (this.chakras[this.activeChakra] && this.chakras[this.activeChakra].unlocked) {
-                    const chakra = this.chakras[this.activeChakra];
-                    card.effect.q *= chakra.effects.oracleClarity;
-                    card.effect.c *= chakra.effects.oracleClarity;
-                }
-                
-                return card;
-            };
-        }
+            return result;
+        };
+        
+        // Override oracle draw
+        this.nexus.oracle.draw = (field = null) => {
+            const card = originalDraw(field);
+            
+            // Apply chakra modifiers
+            if (this.chakras[this.activeChakra] && this.chakras[this.activeChakra].unlocked) {
+                const chakra = this.chakras[this.activeChakra];
+                card.effect.q *= chakra.effects.oracleClarity;
+                card.effect.c *= chakra.effects.oracleClarity;
+            }
+            
+            return card;
+        };
+    }
 
     // ==================== SALVAR/CARREGAR ESTADO ====================
     saveUpgradeState() {
@@ -1026,7 +1027,7 @@ class QuantumUpgradeSystem {
                     this.activeChakra = state.activeChakra;
                 }
                 
-                this.nexus.ui.log("Estado do upgrade carregado.");
+                this.nexus.ui.log("Estado do upgrade carregado.", 'info');
             }
         } catch (e) {
             console.warn("Falha ao carregar estado do upgrade:", e);
@@ -1053,7 +1054,7 @@ class MissionSystem {
                 type: 'visit_fields',
                 target: 4,
                 reward: { quantum: 300, consciousness: 100 },
-                icon: '🌍'
+                icon: '🧭'  // Bússola quântica
             },
             {
                 id: 'oracle_initiate',
@@ -1062,7 +1063,7 @@ class MissionSystem {
                 type: 'use_oracle',
                 target: 3,
                 reward: { quantum: 200, consciousness: 150 },
-                icon: '🔮'
+                icon: '⚛️'  // Átomo/símbolo quântico
             },
             {
                 id: 'norse_adept',
@@ -1072,7 +1073,7 @@ class MissionSystem {
                 field: 'norse',
                 target: 15,
                 reward: { quantum: 400, consciousness: 80 },
-                icon: '⚡'
+                icon: 'ᛉ'  // Runa Algiz (proteção)
             },
             {
                 id: 'entity_collector',
@@ -1081,7 +1082,7 @@ class MissionSystem {
                 type: 'interact_entities',
                 target: 5,
                 reward: { quantum: 250, consciousness: 200 },
-                icon: '✨'
+                icon: '𓆓'  // Símbolo egípcio (cobra)
             }
         ];
         
@@ -1173,8 +1174,9 @@ class MissionSystem {
         this.activeMissions = this.activeMissions.filter(m => m.id !== mission.id);
         this.completedMissions.push(mission);
         
-        window.nexus.ui.showTransmission("MISSÃO", `"${mission.title}" completada! Recompensa recebida.`);
-        window.nexus.ui.log(`Missão completada: ${mission.title}`);
+        window.nexus.ui.showTransmission("MISSION", 
+            `"${mission.title}" completada! Recompensa recebida.`, 4000);
+        window.nexus.ui.log(`Missão completada: ${mission.title}`, 'mission');
         
         this.activateNextMission(mission);
     }
@@ -1415,8 +1417,8 @@ class TutorialManager {
         this.isActive = false;
         this.overlay.classList.remove('active');
         localStorage.setItem('nexus_tutorial_completed', 'true');
-        this.nexus.ui.log("Tutorial concluído. Boa jornada, viajante quântico!");
-        this.nexus.ui.showTransmission("SYSTEM", "Sistemas de aprendizagem concluídos. O Nexus está à sua disposição.");
+        this.nexus.ui.log("Tutorial concluído. Boa jornada, viajante quântico!", 'success');
+        this.nexus.ui.showTransmission("SYSTEM", "Sistemas de aprendizagem concluídos. O Nexus está à sua disposição.", 3000);
     }
 }
 
@@ -1492,20 +1494,44 @@ class UniverseState {
         const oldLevel = this.influence[field].level;
         this.influence[field].level += amount;
         
+        // Check for threshold unlocks
+        this.checkThresholdUnlocks(field, oldLevel);
+        
+        return null;
+    }
+    
+    checkThresholdUnlocks(field, oldLevel) {
         for (const threshold of this.unlockThresholds) {
             if (oldLevel < threshold && this.influence[field].level >= threshold) {
                 if (!this.influence[field].unlocked.includes(threshold)) {
                     this.influence[field].unlocked.push(threshold);
-                    return {
-                        field,
-                        threshold,
-                        index: this.unlockThresholds.indexOf(threshold)
-                    };
+                    
+                    // Notify UI
+                    if (window.nexus && window.nexus.ui) {
+                        window.nexus.ui.showUnlockEffect(field, threshold);
+                        
+                        switch(threshold) {
+                            case 5:
+                                window.nexus.ui.log(`${field.toUpperCase()} field accessible.`, 'info');
+                                break;
+                            case 15:
+                                window.nexus.ui.showTransmission("SYSTEM", 
+                                    `Minor deities available in ${field}.`, 3000);
+                                break;
+                            case 30:
+                                window.nexus.ui.showTransmission("SYSTEM", 
+                                    `Rituals unlocked in ${field}.`, 3000);
+                                break;
+                            case 50:
+                                window.nexus.ui.showPriorityTransmission("ASCENSION", 
+                                    `${field.toUpperCase()} MASTERY ACHIEVED`, 4000);
+                                this.addEnergy(500, 'quantum');
+                                break;
+                        }
+                    }
                 }
             }
         }
-        
-        return null;
     }
 
     onFieldChange() {
@@ -1627,255 +1653,63 @@ class MovementEngine {
     }
 }
 
-// ==================== ORACLE ENGINE (ORIGINAL COM UPGRADE) ====================
+// ==================== ORACLE ENGINE (SIMPLIFICADO) ====================
 
 class OracleEngine {
     constructor(universe) {
         this.universe = universe;
+        this.library = new OracleLibrary(); // Usa a nova biblioteca
+    }
+
+    draw(field = null) {
+        const actualField = field || this.universe.field || 'base';
         
-        this.decks = {
-            base: [
-                { 
-                    name: "O Louco", 
-                    meaning: "O vazio antes do salto. A fé no desconhecido.",
-                    effect: { q: 50, c: 10 },
-                    symbol: "🌀"
-                },
-                { 
-                    name: "O Mago", 
-                    meaning: "O gesto que transforma pensamento em realidade.",
-                    effect: { q: 100, c: 20 },
-                    symbol: "✨"
-                },
-                { 
-                    name: "A Sacerdotisa", 
-                    meaning: "O silêncio entre os mundos. A sabedoria que não se fala.",
-                    effect: { q: 20, c: 50 },
-                    symbol: "🌙"
-                },
-                { 
-                    name: "A Imperatriz", 
-                    meaning: "A terra que recebe a semente. A abundância natural.",
-                    effect: { q: 80, c: 30 },
-                    symbol: "🌿"
-                },
-                { 
-                    name: "A Torre", 
-                    meaning: "O raio que derruba estruturas velhas.",
-                    effect: { q: -50, c: 40 },
-                    symbol: "⚡"
-                },
-                { 
-                    name: "A Estrela", 
-                    meaning: "A luz que atravessa a noite mais densa.",
-                    effect: { q: 60, c: 60 },
-                    symbol: "💫"
-                },
-                { 
-                    name: "O Eremita", 
-                    meaning: "A luz que se busca no interior. O silêncio que ensina.",
-                    effect: { q: 40, c: 80 },
-                    symbol: "🕯️"
-                },
-                { 
-                    name: "A Roda da Fortuna", 
-                    meaning: "O ciclo que gira sem cessar. A sorte que vem e vai.",
-                    effect: { q: Math.random() > 0.5 ? 120 : -80, c: 30 },
-                    symbol: "🔄"
-                },
-                { 
-                    name: "A Força", 
-                    meaning: "O poder que vem da compaixão. O domar sem quebrar.",
-                    effect: { q: 70, c: 50 },
-                    symbol: "🦁"
-                },
-                { 
-                    name: "O Julgamento", 
-                    meaning: "O chamado para renascer. O despertar após o sono.",
-                    effect: { q: 60, c: 90 },
-                    symbol: "⚖️"
-                }
-            ],
-            norse: [
-                { 
-                    name: "Odin", 
-                    meaning: "O sacrifício por visão total. A dor que abre portais.",
-                    effect: { q: 150, c: -20 }, 
-                    symbol: "👁️"
-                },
-                { 
-                    name: "Thor", 
-                    meaning: "O trovão que parte montanhas. A força bruta.",
-                    effect: { q: 80, c: 10 }, 
-                    symbol: "⚡"
-                },
-                { 
-                    name: "Frigg", 
-                    meaning: "O tear que tece destinos. O fio invisível.",
-                    effect: { q: 30, c: 40 }, 
-                    symbol: "🧵"
-                },
-                { 
-                    name: "Loki", 
-                    meaning: "O fogo que brinca com a ordem. O caos que desata nós.",
-                    effect: { q: -100, c: 150 }, 
-                    symbol: "🔥"
-                },
-                { 
-                    name: "Freya", 
-                    meaning: "O amor que transcende mundos. A beleza que é poder.",
-                    effect: { q: 80, c: 70 }, 
-                    symbol: "💖"
-                }
-            ],
-            greek: [
-                { 
-                    name: "Zeus", 
-                    meaning: "O raio que decide. O poder absoluto.",
-                    effect: { q: 200, c: -30 }, 
-                    symbol: "👑"
-                },
-                { 
-                    name: "Atena", 
-                    meaning: "A estratégia que vence sem lutar.",
-                    effect: { q: 70, c: 50 }, 
-                    symbol: "🦉"
-                },
-                { 
-                    name: "Apolo", 
-                    meaning: "A luz que revela e cura. A música que acalma.",
-                    effect: { q: 90, c: 30 }, 
-                    symbol: "☀️"
-                },
-                { 
-                    name: "Hades", 
-                    meaning: "O reino das sombras e riquezas. O que está abaixo sustenta o que está acima.",
-                    effect: { q: 150, c: -50 }, 
-                    symbol: "⚰️"
-                },
-                { 
-                    name: "Afrodite", 
-                    meaning: "A atração que move mundos. O desejo que é criação.",
-                    effect: { q: 50, c: 100 }, 
-                    symbol: "💘"
-                }
-            ],
-            egyptian: [
-                { 
-                    name: "Ra", 
-                    meaning: "O sol que nasce todas as manhãs.",
-                    effect: { q: 120, c: 20 }, 
-                    symbol: "🔥"
-                },
-                { 
-                    name: "Isis", 
-                    meaning: "A magia que reconstrói o quebrado.",
-                    effect: { q: 40, c: 80 }, 
-                    symbol: "𓆓"
-                },
-                { 
-                    name: "Osíris", 
-                    meaning: "A morte que é apenas porta.",
-                    effect: { q: 60, c: 60 }, 
-                    symbol: "☥"
-                },
-                { 
-                    name: "Anúbis", 
-                    meaning: "O guardião da passagem. O peso da verdade na balança.",
-                    effect: { q: 90, c: 60 }, 
-                    symbol: "🐺"
-                },
-                { 
-                    name: "Hórus", 
-                    meaning: "O olho que tudo vê. A justiça que vem das alturas.",
-                    effect: { q: 110, c: 40 }, 
-                    symbol: "👁️"
-                }
-            ],
-            celtic: [
-                { 
-                    name: "Morrígan", 
-                    meaning: "O corvo que anuncia o fim.",
-                    effect: { q: -30, c: 70 }, 
-                    symbol: "⚔️"
-                },
-                { 
-                    name: "Dagda", 
-                    meaning: "O caldeirão que nunca esvazia.",
-                    effect: { q: 100, c: 10 }, 
-                    symbol: "🍯"
-                },
-                { 
-                    name: "Brigid", 
-                    meaning: "O fogo que aquece e inspira.",
-                    effect: { q: 50, c: 40 }, 
-                    symbol: "🔥"
-                },
-                { 
-                    name: "Cernunnos", 
-                    meaning: "O senhor dos animais. A natureza selvagem que renasce.",
-                    effect: { q: 70, c: 80 }, 
-                    symbol: "🦌"
-                },
-                { 
-                    name: "Epona", 
-                    meaning: "A deusa cavalo que leva à terra prometida. A jornada é o destino.",
-                    effect: { q: 60, c: 90 }, 
-                    symbol: "🐎"
-                }
-            ]
+        // Evitar repetição recente
+        const recentCards = this.universe.lastOracleDraws
+            .filter(d => Date.now() - d.time < 30000)
+            .map(d => d.card.id);
+        
+        // Pegar carta da biblioteca
+        let card;
+        let attempts = 0;
+        
+        do {
+            card = this.library.getRandomCard(actualField);
+            attempts++;
+        } while (recentCards.includes(card.id) && attempts < 10);
+        
+        // Aplicar modificadores de campo
+        const mod = this.universe.getFieldModifier(actualField);
+        const adjustedEffect = {
+            q: card.effect.q * mod.oracleWeight,
+            c: card.effect.c * (actualField === 'base' ? 1 : 1.5)
+        };
+        
+        // Salvar no histórico
+        this.universe.lastOracleDraws.unshift({
+            card: { ...card, effect: adjustedEffect },
+            field: actualField,
+            time: Date.now()
+        });
+        
+        if (this.universe.lastOracleDraws.length > 5) {
+            this.universe.lastOracleDraws.pop();
+        }
+        
+        return {
+            ...card,
+            effect: adjustedEffect,
+            field: actualField
         };
     }
 
-        draw(field = null) {
-            const actualField = field || this.universe.field || 'base';
-            const deck = this.getDeckForField(actualField);
-            
-            const weightedDeck = deck.map(card => {
-                let weight = 1;
-                const recentDraws = this.universe.lastOracleDraws.filter(d => 
-                    d.card.name === card.name && Date.now() - d.time < 30000
-                );
-                weight /= (recentDraws.length + 1);
-                return { card, weight };
-            });
-            
-            const totalWeight = weightedDeck.reduce((sum, w) => sum + w.weight, 0);
-            let random = Math.random() * totalWeight;
-            
-            for (const { card, weight } of weightedDeck) {
-                if (random < weight) {
-                    const mod = this.universe.getFieldModifier(actualField);
-                    let adjustedEffect = {
-                        q: card.effect.q * mod.oracleWeight,
-                        c: card.effect.c * (actualField === 'base' ? 1 : 1.5)
-                    };
-                    
-                    // Save to history
-                    this.universe.lastOracleDraws.unshift({
-                        card: { ...card, effect: adjustedEffect },
-                        field: actualField,
-                        time: Date.now()
-                    });
-                    
-                    if (this.universe.lastOracleDraws.length > 5) {
-                        this.universe.lastOracleDraws.pop();
-                    }
-                    
-                    return {
-                        ...card,
-                        effect: adjustedEffect,
-                        field: actualField
-                    };
-                }
-                random -= weight;
-            }
-            
-            return deck[0];
-        }
+    drawTriple() {
+        const field = this.universe.field || 'base';
+        return this.library.getMultipleCards(field, 3);
+    }
 }
 
-// ==================== UI MANAGER (ORIGINAL COM UPGRADE) ====================
+// ==================== UI MANAGER (COM SISTEMA DE FILA) ====================
 
 class UIManager {
     constructor(nexus) {
@@ -1884,6 +1718,8 @@ class UIManager {
         this.microFeedbacks = [];
         this.currentOracleCards = [];
         this.revealedCards = [];
+        this.transmissionQueue = [];
+        this.isShowingTransmission = false;
     }
 
     update() {
@@ -1952,17 +1788,41 @@ class UIManager {
     }
 
     updatePhase() {
-        const phase = this.universe.phase;
-        document.getElementById('phaseDisplay').textContent = phase.toUpperCase();
-        document.body.classList.remove('explore-mode', 'alter-mode', 'receive-mode', 'choose-mode');
-        document.body.classList.add(`${phase}-mode`);
+        const oldPhase = this.universe.phase;
+        let newPhase = oldPhase;
+        
+        if (this.universe.throttle > 10) {
+            newPhase = 'explore';
+        } else if (this.universe.lastOracleDraws.length > 0 && 
+                  Date.now() - this.universe.lastOracleDraws[0].time < 5000) {
+            newPhase = 'receive';
+        } else if (this.isDragging) {
+            newPhase = 'explore';
+        } else {
+            newPhase = 'choose';
+        }
+        
+        if (newPhase !== oldPhase) {
+            this.universe.phase = newPhase;
+            const hints = {
+                explore: "EXPLORE: Drag to navigate the quantum field",
+                alter: "ALTER: Interact with deities and chakras",
+                receive: "RECEIVE: Oracle revelations received",
+                choose: "CHOOSE: Select your next action"
+            };
+            
+            if (hints[newPhase]) {
+                this.showPhaseHint(hints[newPhase]);
+            }
+        }
     }
 
     checkCriticalEnergy() {
         const critical = this.universe.energy.quantum < 100;
         if (critical && !document.body.classList.contains('critical-energy')) {
             document.body.classList.add('critical-energy');
-            this.showTransmission('SYSTEM', 'Warning: Quantum energy critical. Seek recharge zone.');
+            this.showPriorityTransmission('CRITICAL', 
+                'Energia Quântica Crítica! Procure zona de recarga.', 5000);
         } else if (!critical && document.body.classList.contains('critical-energy')) {
             document.body.classList.remove('critical-energy');
         }
@@ -2012,15 +1872,87 @@ class UIManager {
         missionsList.innerHTML = html;
     }
 
-    showTransmission(source, message) {
-        const tx = document.getElementById('divineTransmission');
+    // ==================== SISTEMA DE TRANSMISSÃO COM FILA ====================
+    showTransmission(source, message, duration = 5000) {
+        // Adicionar à fila
+        this.transmissionQueue.push({
+            source: source,
+            message: message,
+            duration: duration,
+            timestamp: Date.now()
+        });
         
+        // Processar fila se não estiver mostrando nada
+        if (!this.isShowingTransmission) {
+            this.processTransmissionQueue();
+        }
+    }
+
+    processTransmissionQueue() {
+        if (this.transmissionQueue.length === 0) {
+            this.isShowingTransmission = false;
+            return;
+        }
+        
+        this.isShowingTransmission = true;
+        
+        // Pegar próxima mensagem
+        const transmission = this.transmissionQueue.shift();
+        
+        const tx = document.getElementById('divineTransmission');
         const sourceNames = {
             SYSTEM: "VOZ DO SISTEMA",
             ODIN: "SUSSURRO DE ODIN",
             ZEUS: "ECO DO OLIMPO",
             RA: "SOL DE RÁ",
-            MORRIGAN: "SOMBRA DA MORRÍGAN"
+            MORRIGAN: "SOMBRA DA MORRÍGAN",
+            CHAKRA: "SISTEMA DE CHAKRAS",
+            PORTAL: "REDE DE PORTAL",
+            ARTIFACT: "COLETOR DE ARTEFATOS",
+            MISSION: "SISTEMA DE MISSÕES"
+        };
+        
+        document.getElementById('txGodName').textContent = 
+            sourceNames[transmission.source] || transmission.source;
+        
+        document.getElementById('txMessage').textContent = transmission.message;
+        
+        // Mostrar transmissão
+        tx.classList.add('active');
+        
+        // Log no sistema
+        const logMessages = [
+            `Sinal recebido de ${transmission.source.toLowerCase()}`,
+            `${transmission.source} comunica-se`,
+            `Transmissão: ${transmission.source}`,
+            `Mensagem entrelaçada`
+        ];
+        
+        this.log(logMessages[Math.floor(Math.random() * logMessages.length)], 'info');
+        
+        // Configurar timeout para próxima mensagem
+        setTimeout(() => {
+            tx.classList.remove('active');
+            
+            // Pequeno delay entre mensagens
+            setTimeout(() => {
+                this.processTransmissionQueue();
+            }, 500); // 500ms entre mensagens
+        }, transmission.duration);
+    }
+
+    showPriorityTransmission(source, message, duration = 4000) {
+        // Limpar fila atual
+        this.clearTransmissionQueue();
+        
+        // Mostrar mensagem prioritária imediatamente
+        const tx = document.getElementById('divineTransmission');
+        
+        const sourceNames = {
+            SYSTEM: "VOZ DO SISTEMA",
+            CRITICAL: "ALERTA CRÍTICO",
+            ASCENSION: "ASCENSÃO",
+            DANGER: "PERIGO"
         };
         
         document.getElementById('txGodName').textContent = 
@@ -2028,18 +1960,27 @@ class UIManager {
         
         document.getElementById('txMessage').textContent = message;
         
-        tx.classList.add('active');
+        // Adicionar classe de prioridade
+        tx.classList.add('active', 'transmission-important');
         
-        const logMessages = [
-            `Sinal recebido de ${source.toLowerCase()}`,
-            `${source} comunica-se`,
-            `Transmissão: ${source}`,
-            `Mensagem entrelaçada`
-        ];
+        // Log
+        this.log(`[PRIORIDADE] ${source}: ${message}`, 'warning');
         
-        this.log(logMessages[Math.floor(Math.random() * logMessages.length)]);
-        
-        setTimeout(() => tx.classList.remove('active'), 5000);
+        // Remover após duração
+        setTimeout(() => {
+            tx.classList.remove('active', 'transmission-important');
+            // Retomar fila normal após 1 segundo
+            setTimeout(() => {
+                this.processTransmissionQueue();
+            }, 1000);
+        }, duration);
+    }
+
+    clearTransmissionQueue() {
+        this.transmissionQueue = [];
+        const tx = document.getElementById('divineTransmission');
+        tx.classList.remove('active');
+        this.isShowingTransmission = false;
     }
 
     showOracle(cards) {
@@ -2109,11 +2050,16 @@ class UIManager {
             `<div class="interpretation-title">${arrivalMessages[field]}</div>`;
     }
 
-    revealCard(cardEl, card, index) {
+    async revealCard(cardEl, card, index) {
         if (cardEl.classList.contains('flipped')) return;
         
         cardEl.classList.remove('unrevealed');
         cardEl.classList.add('flipped');
+        
+        // Usar biblioteca para animação se disponível
+        if (window.nexus.oracle.library && window.nexus.oracle.library.revealCardWithAnimation) {
+            await window.nexus.oracle.library.revealCardWithAnimation(cardEl, card);
+        }
         
         const oldQ = this.universe.energy.quantum;
         const oldC = this.universe.energy.consciousness;
@@ -2144,14 +2090,10 @@ class UIManager {
         const color = deltaQ > 0 ? '#00ffaa' : (deltaQ < 0 ? '#ff5555' : '#9d4edd');
         this.createMicroFeedback(cardEl, '⚡', color);
         
-        const logMessages = [
-            `O oráculo revela: ${card.name}`,
-            `${card.name} manifesta-se`,
-            `Visão: ${card.name}`,
-            `Destino desvelado: ${card.name}`
-        ];
+        this.log(`O oráculo revela: ${card.name}`, 'oracle');
         
-        this.log(logMessages[Math.floor(Math.random() * logMessages.length)]);
+        // Atualizar progresso da missão
+        this.universe.missions.updateProgress('oracle_use');
     }
 
     updateInterpretation() {
@@ -2247,20 +2189,39 @@ class UIManager {
         this.universe.missions.updateProgress('entity_interact');
     }
 
-    log(message) {
+    log(message, type = 'info') {
         const feed = document.getElementById('logFeed');
         const div = document.createElement('div');
-        div.className = 'log-entry';
+        div.className = `log-entry log-${type}`;
         
         const now = new Date();
-        const ts = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+        const ts = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
         
-        div.innerHTML = `<span class="log-time">${ts}</span> ${message}`;
+        // Ícone baseado no tipo
+        const icons = {
+            info: '📡',
+            warning: '⚠️',
+            error: '🚨',
+            success: '✅',
+            mission: '🎯',
+            oracle: '🔮'
+        };
+        
+        div.innerHTML = `
+            <span class="log-time">${ts}</span>
+            <span class="log-icon">${icons[type] || '📝'}</span>
+            <span class="log-message">${message}</span>
+        `;
+        
         feed.prepend(div);
         
-        if (feed.children.length > 12) {
+        // Limitar a 20 entradas
+        if (feed.children.length > 20) {
             feed.removeChild(feed.lastChild);
         }
+        
+        // Animação de entrada
+        div.style.animation = 'logEntry 0.3s ease';
     }
 
     createMicroFeedback(element, text, color = '#00f3ff') {
@@ -2308,7 +2269,7 @@ class UIManager {
             50: `Nível ${threshold}: ASCENSÃO ${field.toUpperCase()}`
         };
         
-        this.showTransmission('SYSTEM', messages[threshold] || `Nível ${threshold} alcançado em ${field}`);
+        this.showTransmission('SYSTEM', messages[threshold] || `Nível ${threshold} alcançado em ${field}`, 3000);
         
         setTimeout(() => {
             if (effect.parentNode) {
@@ -2393,12 +2354,12 @@ class NexusCore {
                     loader.style.opacity = '0';
                     setTimeout(() => {
                         loader.style.display = 'none';
-                        this.ui.log("System Online. Welcome to Nexus 2126.");
-                        this.ui.showTransmission("SYSTEM", "Quantum field stable. Begin exploration.");
+                        this.ui.log("System Online. Welcome to Nexus 2126.", 'info');
+                        this.ui.showTransmission("SYSTEM", "Quantum field stable. Begin exploration.", 3000);
                         
                         // Verificar se há sistema de upgrade
                         if (this.upgrade) {
-                            this.ui.log("Quantum Upgrade System initialized.");
+                            this.ui.log("Quantum Upgrade System initialized.", 'info');
                         }
                     }, 500);
                 }, 500);
@@ -2732,8 +2693,6 @@ class NexusCore {
             this.universe.lastEventTime = Date.now();
         }
         
-        this.checkUnlocks();
-        
         this.ui.update();
         
         requestAnimationFrame(() => this.gameLoop());
@@ -2771,7 +2730,7 @@ class NexusCore {
 
     triggerOracle() {
         if (this.universe.energy.quantum < 100) {
-            this.ui.showTransmission("SYSTEM", "Insufficient quantum energy for oracle.");
+            this.ui.showTransmission("SYSTEM", "Insufficient quantum energy for oracle.", 2500);
             return;
         }
         
@@ -2779,13 +2738,12 @@ class NexusCore {
         const cards = this.oracle.drawTriple();
         this.ui.showOracle(cards);
         
-        this.ui.log(`Oracle engaged in ${this.universe.field} field.`);
-        this.universe.missions.updateProgress('oracle_use');
+        this.ui.log(`Oracle engaged in ${this.universe.field} field.`, 'oracle');
     }
 
     drawTriple() {
         if (this.universe.energy.quantum < 50) {
-            this.ui.showTransmission("SYSTEM", "Energy too low for triple draw.");
+            this.ui.showTransmission("SYSTEM", "Energy too low for triple draw.", 2500);
             return;
         }
         
@@ -2811,8 +2769,8 @@ class NexusCore {
     triggerRandomEvent() {
         const events = [
             () => {
-                const god = this.oracle.decks.base[Math.floor(Math.random() * this.oracle.decks.base.length)];
-                this.ui.showTransmission("QUANTUM ENTITY", god.meaning);
+                const god = this.oracle.draw('base');
+                this.ui.showTransmission("QUANTUM ENTITY", god.meaning, 3500);
             },
             () => {
                 this.universe.addEnergy(50, 'quantum');
@@ -2821,13 +2779,13 @@ class NexusCore {
                     "+50Ω",
                     '#00f3ff'
                 );
-                this.ui.log("Quantum energy surge detected.");
+                this.ui.log("Quantum energy surge detected.", 'info');
             },
             () => {
                 const field = this.universe.field;
                 if (field && this.universe.influence[field].level < 50) {
                     this.universe.addInfluence(field, 2);
-                    this.ui.log(`Field resonance: ${field} influence increased.`);
+                    this.ui.log(`Field resonance: ${field} influence increased.`, 'info');
                 }
             }
         ];
@@ -2836,48 +2794,6 @@ class NexusCore {
         randomEvent();
     }
 
-        checkUnlocks() {
-            const fields = ['norse', 'greek', 'egyptian', 'celtic'];
-            
-            fields.forEach(field => {
-                // Get current level and thresholds
-                const currentLevel = this.universe.influence[field].level;
-                const thresholds = [5, 15, 30, 50];
-                const unlocked = this.universe.influence[field].unlocked || [];
-                
-                thresholds.forEach(threshold => {
-                    // Check if we've reached this threshold but haven't unlocked it yet
-                    if (currentLevel >= threshold && !unlocked.includes(threshold)) {
-                        // Mark as unlocked
-                        if (!this.universe.influence[field].unlocked) {
-                            this.universe.influence[field].unlocked = [];
-                        }
-                        this.universe.influence[field].unlocked.push(threshold);
-                        
-                        // Show unlock effect
-                        this.ui.showUnlockEffect(field, threshold);
-                        
-                        // Log the unlock
-                        switch(threshold) {
-                            case 5:
-                                this.ui.log(`${field.toUpperCase()} field accessible.`);
-                                break;
-                            case 15:
-                                this.ui.showTransmission("SYSTEM", `Minor deities available in ${field}.`);
-                                break;
-                            case 30:
-                                this.ui.showTransmission("SYSTEM", `Rituals unlocked in ${field}.`);
-                                break;
-                            case 50:
-                                this.ui.showTransmission("ASCENSION", `${field.toUpperCase()} MASTERY ACHIEVED`);
-                                this.universe.addEnergy(500, 'quantum');
-                                break;
-                        }
-                    }
-                });
-            });
-        }
-
     togglePause() {
         const btn = document.getElementById('btnPause');
         const icon = btn.querySelector('i');
@@ -2885,11 +2801,11 @@ class NexusCore {
         if (this.universe.throttle === 0) {
             this.universe.throttle = 30;
             icon.className = 'fas fa-pause';
-            this.ui.log("Navigation resumed.");
+            this.ui.log("Navigation resumed.", 'info');
         } else {
             this.universe.throttle = 0;
             icon.className = 'fas fa-play';
-            this.ui.log("Navigation paused.");
+            this.ui.log("Navigation paused.", 'info');
         }
     }
 
@@ -2930,7 +2846,7 @@ class NexusCore {
             
             if (state.history) {
                 this.universe.history = state.history;
-                this.ui.log("Previous session state restored.");
+                this.ui.log("Previous session state restored.", 'info');
             }
         } catch (e) {
             console.warn("Failed to load saved state:", e);
@@ -2943,3 +2859,25 @@ class NexusCore {
 window.addEventListener('load', () => {
     window.nexus = new NexusCore();
 });
+
+// DEBUG: Verificar botões do oráculo
+setTimeout(() => {
+    const oracleBtn = document.getElementById('btnOraclePanel');
+    const oracleMobileBtn = document.getElementById('btnOracleMobile');
+    
+    console.log('Botão Oracle (painel):', oracleBtn);
+    console.log('Botão Oracle (mobile):', oracleMobileBtn);
+    
+    if (oracleBtn) {
+        oracleBtn.addEventListener('click', () => {
+            console.log('Botão oracle clicado!');
+            console.log('Energia atual:', window.nexus?.universe?.energy?.quantum);
+        });
+    }
+    
+    if (oracleMobileBtn) {
+        oracleMobileBtn.addEventListener('click', () => {
+            console.log('Botão oracle mobile clicado!');
+        });
+    }
+}, 2000);
