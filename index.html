@@ -28,11 +28,11 @@
         <div class="tutorial-highlight" id="tutorialHighlight"></div>
         <div class="tutorial-content">
             <div class="tutorial-header">
-                <h3><i class="fas fa-graduation-cap"></i> NEXUS TUTORIAL</h3>
+                <h3><i class="fas fa-graduation-cap"></i>TUTORIAL</h3>
                 <span id="tutorialStep">1/8</span>
             </div>
             <div class="tutorial-body">
-                <p id="tutorialText">Bem-vindo ao Nexus 2126. Vamos aprender a pilotar o cockpit quântico.</p>
+                <p id="tutorialText">Bem-vindo, vamos aprender a pilotar.</p>
             </div>
             <div class="tutorial-footer">
                 <button id="tutorialPrev" class="tutorial-btn secondary">
@@ -52,6 +52,11 @@
     <div class="tutorial-reopen" id="tutorialReopen">
         <i class="fas fa-question-circle"></i>
     </div>
+
+    <!-- BOTÃO DE UPGRADE -->
+    <button class="upgrade-fab" id="btnUpgrade">
+        <i class="fas fa-cogs"></i>
+    </button>
 
     <!-- COCKPIT -->
     <div class="cockpit-grid-container">
@@ -148,7 +153,7 @@
             <div id="oracleDeckOverlay" class="oracle-overlay">
                 <div class="deck-header">
                     <h2 id="currentDeckTitle">ORACLE SYSTEM</h2>
-                    <div id="drawTypeLabel">Tiragem: Três Destinos</div>
+                    <div id="drawTypeLabel">Três Destinos</div>
                 </div>
                 <div class="card-display-area" id="cardDisplay">
                     <!-- Cards will be inserted here -->
@@ -172,6 +177,26 @@
                     <p>Entity information will appear here.</p>
                 </div>
                 <div class="holo-footer" id="holoFooter">ID: UNKNOWN</div>
+            </div>
+
+            <!-- UPGRADE PANEL -->
+            <div id="upgradePanel" class="upgrade-panel">
+                <div class="upgrade-header">
+                    <h3><i class="fas fa-rocket"></i>DIMENSÕES DO NEXUS</h3>
+                    <button id="closeUpgradePanel"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="upgrade-tabs">
+                    <button class="upgrade-tab active" data-tab="chakras">Chakras</button>
+                    <button class="upgrade-tab" data-tab="mythologies">Mitologias</button>
+                    <button class="upgrade-tab" data-tab="portals">Portais</button>
+                    <button class="upgrade-tab" data-tab="artifacts">Artefatos</button>
+                </div>
+                <div class="upgrade-content">
+                    <div class="upgrade-tab-content active" id="chakras-tab"></div>
+                    <div class="upgrade-tab-content" id="mythologies-tab"></div>
+                    <div class="upgrade-tab-content" id="portals-tab"></div>
+                    <div class="upgrade-tab-content" id="artifacts-tab"></div>
+                </div>
             </div>
         </main>
 

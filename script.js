@@ -1,7 +1,1040 @@
 /**
- * NEXUS 2126 - CORE ENGINE V4.0
- * Sistema completo com Tutorial, Missões e Cartas Expandidas
+ * NEXUS 2126 - CORE ENGINE V5.0
+ * Sistema completo com Tutorial, Missões, Cartas Expandidas e UPGRADE
  */
+
+// ==================== SISTEMA DE UPGRADE ====================
+// Clear problematic saved states on load
+try {
+    localStorage.removeItem('nexus_upgrade_state');
+    localStorage.removeItem('nexus_missions');
+    localStorage.removeItem('nexus2126_state');
+} catch (e) {
+    console.log("Cleanup completed");
+}
+class QuantumUpgradeSystem {
+    constructor(nexus) {
+        this.nexus = nexus;
+        this.init();
+    }
+
+    init() {
+        this.setupChakraSystem();
+        this.setupMythologyExpansion();
+        this.setupPortalNetwork();
+        this.setupArtifactCollection();
+        this.bindUpgradeEvents();
+        this.loadUpgradeState();
+        
+        // Integrar com sistemas existentes
+        this.integrateWithExistingSystems();
+    }
+
+    // ==================== SISTEMA DE CHAKRAS ====================
+    setupChakraSystem() {
+        this.chakras = {
+            root: {
+                name: "Muladhara",
+                color: "#ff0000",
+                frequency: 396,
+                energy: 0,
+                maxEnergy: 100,
+                level: 1,
+                unlocked: true,
+                effects: {
+                    quantumStability: 1.0,
+                    influenceGain: 1.0,
+                    oracleClarity: 1.0
+                },
+                description: "Chakra Raiz - Estabilidade e Fundamento"
+            },
+            sacral: {
+                name: "Svadhisthana",
+                color: "#ff5500",
+                frequency: 417,
+                energy: 0,
+                maxEnergy: 100,
+                level: 0,
+                unlocked: false,
+                effects: {
+                    quantumStability: 1.2,
+                    influenceGain: 1.3,
+                    oracleClarity: 1.1
+                },
+                description: "Chakra Sacral - Criatividade e Fluxo"
+            },
+            solar: {
+                name: "Manipura",
+                color: "#ffff00",
+                frequency: 528,
+                energy: 0,
+                maxEnergy: 100,
+                level: 0,
+                unlocked: false,
+                effects: {
+                    quantumStability: 1.4,
+                    influenceGain: 1.5,
+                    oracleClarity: 1.2
+                },
+                description: "Chakra do Plexo Solar - Poder e Vontade"
+            },
+            heart: {
+                name: "Anahata",
+                color: "#00ff00",
+                frequency: 639,
+                energy: 0,
+                maxEnergy: 100,
+                level: 0,
+                unlocked: false,
+                effects: {
+                    quantumStability: 1.6,
+                    influenceGain: 1.7,
+                    oracleClarity: 1.3
+                },
+                description: "Chakra Cardíaco - Conexão e Harmonia"
+            },
+            throat: {
+                name: "Vishuddha",
+                color: "#0000ff",
+                frequency: 741,
+                energy: 0,
+                maxEnergy: 100,
+                level: 0,
+                unlocked: false,
+                effects: {
+                    quantumStability: 1.8,
+                    influenceGain: 1.9,
+                    oracleClarity: 1.4
+                },
+                description: "Chakra Laríngeo - Expressão e Verdade"
+            },
+            third: {
+                name: "Ajna",
+                color: "#4b0082",
+                frequency: 852,
+                energy: 0,
+                maxEnergy: 100,
+                level: 0,
+                unlocked: false,
+                effects: {
+                    quantumStability: 2.0,
+                    influenceGain: 2.1,
+                    oracleClarity: 1.5
+                },
+                description: "Chakra do Terceiro Olho - Intuição e Visão"
+            },
+            crown: {
+                name: "Sahasrara",
+                color: "#9400d3",
+                frequency: 963,
+                energy: 0,
+                maxEnergy: 100,
+                level: 0,
+                unlocked: false,
+                effects: {
+                    quantumStability: 2.5,
+                    influenceGain: 2.5,
+                    oracleClarity: 2.0
+                },
+                description: "Chakra Coronário - Iluminação e União"
+            }
+        };
+
+        this.activeChakra = 'root';
+        this.chakraResonance = 0;
+    }
+
+    addChakraEnergy(chakra, amount) {
+        if (!this.chakras[chakra] || !this.chakras[chakra].unlocked) return false;
+
+        const oldEnergy = this.chakras[chakra].energy;
+        this.chakras[chakra].energy += amount;
+
+        // Level up
+        if (this.chakras[chakra].energy >= this.chakras[chakra].maxEnergy) {
+            this.chakras[chakra].level++;
+            this.chakras[chakra].energy = 0;
+            this.chakras[chakra].maxEnergy += 50;
+            
+            // Desbloquear próximo chakra
+            if (chakra === 'root' && this.chakras[chakra].level >= 2) {
+                this.unlockChakra('sacral');
+            } else if (chakra === 'sacral' && this.chakras[chakra].level >= 3) {
+                this.unlockChakra('solar');
+            } else if (chakra === 'solar' && this.chakras[chakra].level >= 4) {
+                this.unlockChakra('heart');
+            } else if (chakra === 'heart' && this.chakras[chakra].level >= 5) {
+                this.unlockChakra('throat');
+            } else if (chakra === 'throat' && this.chakras[chakra].level >= 6) {
+                this.unlockChakra('third');
+            } else if (chakra === 'third' && this.chakras[chakra].level >= 7) {
+                this.unlockChakra('crown');
+            }
+
+            this.nexus.ui.showTransmission("CHAKRA SYSTEM", 
+                `${this.chakras[chakra].name} alcançou nível ${this.chakras[chakra].level}!`);
+            return true;
+        }
+
+        return false;
+    }
+
+    unlockChakra(chakra) {
+        if (this.chakras[chakra]) {
+            this.chakras[chakra].unlocked = true;
+            this.nexus.ui.log(`Chakra ${this.chakras[chakra].name} desbloqueado!`);
+            
+            // Criar efeito visual
+            const effect = document.createElement('div');
+            effect.className = 'chakra-unlock-effect';
+            effect.style.color = this.chakras[chakra].color;
+            effect.textContent = this.chakras[chakra].name;
+            document.body.appendChild(effect);
+            
+            setTimeout(() => effect.remove(), 3000);
+        }
+    }
+
+    // ==================== EXPANSÃO DE MITOLOGIAS ====================
+    setupMythologyExpansion() {
+        this.expandedMythologies = {
+            hindu: {
+                name: "Hindu/Védica",
+                color: "#ff6b6b",
+                deities: [
+                    { name: "Brahma", power: 9, element: "criação" },
+                    { name: "Vishnu", power: 10, element: "preservação" },
+                    { name: "Shiva", power: 10, element: "transformação" },
+                    { name: "Lakshmi", power: 8, element: "prosperidade" },
+                    { name: "Ganesha", power: 7, element: "sabedoria" }
+                ],
+                unlocked: false,
+                level: 0,
+                progress: 0
+            },
+            chinese: {
+                name: "Chinesa",
+                color: "#ffd166",
+                deities: [
+                    { name: "Yu Huang", power: 9, element: "céu" },
+                    { name: "Guan Yin", power: 8, element: "misericórdia" },
+                    { name: "Jade Emperor", power: 10, element: "imperial" },
+                    { name: "Zhong Kui", power: 7, element: "exorcismo" },
+                    { name: "Mazu", power: 6, element: "mar" }
+                ],
+                unlocked: false,
+                level: 0,
+                progress: 0
+            },
+            japanese: {
+                name: "Japonesa",
+                color: "#06d6a0",
+                deities: [
+                    { name: "Amaterasu", power: 10, element: "sol" },
+                    { name: "Susanoo", power: 9, element: "tempestade" },
+                    { name: "Tsukuyomi", power: 8, element: "lua" },
+                    { name: "Inari", power: 7, element: "fertilidade" },
+                    { name: "Benzaiten", power: 6, element: "artes" }
+                ],
+                unlocked: false,
+                level: 0,
+                progress: 0
+            },
+            aztec: {
+                name: "Asteca",
+                color: "#118ab2",
+                deities: [
+                    { name: "Quetzalcoatl", power: 10, element: "vento" },
+                    { name: "Huitzilopochtli", power: 9, element: "guerra" },
+                    { name: "Tezcatlipoca", power: 9, element: "escuridão" },
+                    { name: "Tlaloc", power: 8, element: "chuva" },
+                    { name: "Xipe Totec", power: 7, element: "renascimento" }
+                ],
+                unlocked: false,
+                level: 0,
+                progress: 0
+            },
+            mayan: {
+                name: "Maia",
+                color: "#073b4c",
+                deities: [
+                    { name: "Itzamna", power: 10, element: "criação" },
+                    { name: "Kukulkan", power: 9, element: "serpente" },
+                    { name: "Ix Chel", power: 8, element: "lua" },
+                    { name: "Ah Puch", power: 7, element: "morte" },
+                    { name: "Chaac", power: 8, element: "chuva" }
+                ],
+                unlocked: false,
+                level: 0,
+                progress: 0
+            },
+            polynesian: {
+                name: "Polinésia",
+                color: "#7209b7",
+                deities: [
+                    { name: "Maui", power: 8, element: "travessura" },
+                    { name: "Pele", power: 9, element: "fogo" },
+                    { name: "Kanaloa", power: 7, element: "oceano" },
+                    { name: "Lono", power: 6, element: "fertilidade" },
+                    { name: "Kū", power: 8, element: "guerra" }
+                ],
+                unlocked: false,
+                level: 0,
+                progress: 0
+            },
+            yoruba: {
+                name: "Iorubá",
+                color: "#f72585",
+                deities: [
+                    { name: "Obatalá", power: 10, element: "criação" },
+                    { name: "Yemoja", power: 9, element: "mar" },
+                    { name: "Shango", power: 9, element: "trovão" },
+                    { name: "Ogun", power: 8, element: "ferro" },
+                    { name: "Eshu", power: 7, element: "encruzilhada" }
+                ],
+                unlocked: false,
+                level: 0,
+                progress: 0
+            },
+            slavic: {
+                name: "Eslava",
+                color: "#4cc9f0",
+                deities: [
+                    { name: "Perun", power: 9, element: "trovão" },
+                    { name: "Veles", power: 8, element: "submundo" },
+                    { name: "Svarog", power: 9, element: "fogo" },
+                    { name: "Mokosh", power: 7, element: "terra" },
+                    { name: "Dazhbog", power: 7, element: "sol" }
+                ],
+                unlocked: false,
+                level: 0,
+                progress: 0
+            }
+        };
+    }
+
+    unlockMythology(mythology) {
+        if (this.expandedMythologies[mythology]) {
+            this.expandedMythologies[mythology].unlocked = true;
+            
+            // Adicionar novas entidades ao board
+            this.addMythologyEntities(mythology);
+            
+            this.nexus.ui.showTransmission("MYTHOLOGY EXPANSION", 
+                `${this.expandedMythologies[mythology].name} desbloqueada!`);
+        }
+    }
+
+    addMythologyEntities(mythology) {
+        const myth = this.expandedMythologies[mythology];
+        const entityLayer = document.getElementById('entityLayer');
+        
+        myth.deities.forEach(deity => {
+            // Posicionar aleatoriamente no quadrante apropriado
+            const x = 10 + Math.random() * 80;
+            const y = 10 + Math.random() * 80;
+            
+            const entity = document.createElement('div');
+            entity.className = 'entity-node expanded-mythology';
+            entity.style.left = `${x}%`;
+            entity.style.top = `${y}%`;
+            entity.style.color = myth.color;
+            entity.style.border = `2px solid ${myth.color}`;
+            entity.innerHTML = `<div class="entity-label">${deity.name}</div>`;
+            
+            entity.addEventListener('click', () => {
+                this.nexus.ui.showHoloInfo({
+                    name: deity.name,
+                    desc: `${myth.name} - ${deity.element}`,
+                    power: deity.power,
+                    type: 'Deity',
+                    mythology: mythology
+                });
+                
+                // Ganhar influência na mitologia
+                this.addMythologyProgress(mythology, 10);
+                this.nexus.universe.addInfluence(mythology, 5);
+            });
+            
+            entityLayer.appendChild(entity);
+        });
+    }
+
+    addMythologyProgress(mythology, amount) {
+        if (!this.expandedMythologies[mythology]) return;
+        
+        const myth = this.expandedMythologies[mythology];
+        myth.progress += amount;
+        
+        if (myth.progress >= 100) {
+            myth.level++;
+            myth.progress = 0;
+            
+            // Recompensa por level up
+            this.nexus.universe.addEnergy(200, 'quantum');
+            this.nexus.universe.addEnergy(100, 'consciousness');
+            
+            this.nexus.ui.showTransmission(myth.name.toUpperCase(), 
+                `Nível ${myth.level} alcançado!`);
+        }
+    }
+
+    // ==================== PORTAL QUÂNTICO ====================
+    setupPortalNetwork() {
+        this.portals = {
+            quantumTunnel: {
+                name: "Tunelamento Quântico",
+                unlocked: false,
+                cost: 500,
+                effect: "Teletransporte entre mitologias",
+                position: { x: 50, y: 50 }
+            },
+            frequencyPortal: {
+                name: "Portal de Frequência",
+                unlocked: false,
+                cost: 1000,
+                effect: "Acesso a espectros dimensionais",
+                position: { x: 20, y: 80 }
+            },
+            expansionPortal: {
+                name: "Portal de Expansão",
+                unlocked: false,
+                cost: 2000,
+                effect: "Expansão do campo quântico",
+                position: { x: 80, y: 20 }
+            },
+            collapsePortal: {
+                name: "Portal de Colapso",
+                unlocked: false,
+                cost: 5000,
+                effect: "Colapso da função de onda",
+                position: { x: 80, y: 80 }
+            }
+        };
+    }
+
+    unlockPortal(portalId) {
+        if (this.portals[portalId] && !this.portals[portalId].unlocked) {
+            if (this.nexus.universe.energy.quantum >= this.portals[portalId].cost) {
+                this.nexus.universe.consumeEnergy(this.portals[portalId].cost, 'quantum');
+                this.portals[portalId].unlocked = true;
+                
+                // Criar portal no board
+                this.createPortalElement(portalId);
+                
+                this.nexus.ui.showTransmission("PORTAL SYSTEM", 
+                    `${this.portals[portalId].name} ativado!`);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    createPortalElement(portalId) {
+        const portal = this.portals[portalId];
+        const entityLayer = document.getElementById('entityLayer');
+        
+        const portalEl = document.createElement('div');
+        portalEl.className = 'quantum-portal';
+        portalEl.id = `portal-${portalId}`;
+        portalEl.style.left = `${portal.position.x}%`;
+        portalEl.style.top = `${portal.position.y}%`;
+        portalEl.style.border = `3px solid var(--neon-cyan)`;
+        portalEl.innerHTML = `
+            <div class="portal-glow"></div>
+            <div class="portal-label">${portal.name}</div>
+        `;
+        
+        portalEl.addEventListener('click', () => {
+            this.activatePortal(portalId);
+        });
+        
+        entityLayer.appendChild(portalEl);
+    }
+
+    activatePortal(portalId) {
+        const portal = this.portals[portalId];
+        if (!portal.unlocked) return;
+        
+        this.nexus.ui.showTransmission("PORTAL ACTIVATION", 
+            `Acessando ${portal.name}... ${portal.effect}`);
+        
+        // Efeitos específicos do portal
+        switch(portalId) {
+            case 'quantumTunnel':
+                // Teletransporte aleatório
+                this.nexus.universe.position.x = 10 + Math.random() * 80;
+                this.nexus.universe.position.y = 10 + Math.random() * 80;
+                this.nexus.ui.updatePosition();
+                break;
+                
+            case 'frequencyPortal':
+                // Boost de energia
+                this.nexus.universe.addEnergy(300, 'quantum');
+                this.nexus.universe.addEnergy(150, 'consciousness');
+                break;
+                
+            case 'expansionPortal':
+                // Expansão do campo
+                document.body.classList.add('field-expanded');
+                setTimeout(() => {
+                    document.body.classList.remove('field-expanded');
+                }, 10000);
+                break;
+                
+            case 'collapsePortal':
+                // Colapso quântico - revelação especial
+                this.triggerQuantumCollapse();
+                break;
+        }
+        
+        // Consumir energia para ativação
+        this.nexus.universe.consumeEnergy(100, 'quantum');
+    }
+
+    triggerQuantumCollapse() {
+        // Revelação especial do oráculo
+        const specialCards = [
+            {
+                name: "SINGULARIDADE",
+                meaning: "O ponto de unificação de todas as possibilidades.",
+                effect: { q: 500, c: 300 },
+                symbol: "⚛️"
+            },
+            {
+                name: "ENTRELAÇAMENTO QUÂNTICO",
+                meaning: "Todas as coisas conectadas em nível fundamental.",
+                effect: { q: 300, c: 500 },
+                symbol: "🌀"
+            },
+            {
+                name: "COLAPSO DA FUNÇÃO DE ONDA",
+                meaning: "A possibilidade torna-se realidade.",
+                effect: { q: 400, c: 400 },
+                symbol: "✨"
+            }
+        ];
+        
+        const card = specialCards[Math.floor(Math.random() * specialCards.length)];
+        this.nexus.ui.showTransmission("QUANTUM COLLAPSE", card.meaning);
+        
+        // Aplicar efeito
+        this.nexus.universe.addEnergy(card.effect.q, 'quantum');
+        this.nexus.universe.addEnergy(card.effect.c, 'consciousness');
+    }
+
+    // ==================== COLETA DE ARTEFATOS ====================
+    setupArtifactCollection() {
+        this.artifacts = {
+            runes: { collected: 0, total: 24, unlocked: [] },
+            shells: { collected: 0, total: 16, unlocked: [] },
+            bones: { collected: 0, total: 12, unlocked: [] },
+            wands: { collected: 0, total: 8, unlocked: [] },
+            crystals: { collected: 0, total: 7, unlocked: [] },
+            fragments: { collected: 0, total: 13, unlocked: [] },
+            pieces: { collected: 0, total: 9, unlocked: [] }
+        };
+        
+        this.artifactSpawns = [];
+        this.lastArtifactSpawn = 0;
+    }
+
+    spawnArtifact() {
+        const now = Date.now();
+        if (now - this.lastArtifactSpawn < 30000) return; // Spawn a cada 30 segundos
+        
+        const artifactTypes = Object.keys(this.artifacts);
+        const type = artifactTypes[Math.floor(Math.random() * artifactTypes.length)];
+        
+        // Verificar se já coletou todos
+        if (this.artifacts[type].collected >= this.artifacts[type].total) return;
+        
+        const x = 5 + Math.random() * 90;
+        const y = 5 + Math.random() * 90;
+        
+        const artifact = {
+            type: type,
+            x: x,
+            y: y,
+            element: document.createElement('div')
+        };
+        
+        artifact.element.className = 'artifact-node';
+        artifact.element.style.left = `${x}%`;
+        artifact.element.style.top = `${y}%`;
+        artifact.element.style.color = this.getArtifactColor(type);
+        artifact.element.innerHTML = this.getArtifactSymbol(type);
+        
+        artifact.element.addEventListener('click', () => {
+            this.collectArtifact(artifact);
+        });
+        
+        document.getElementById('entityLayer').appendChild(artifact.element);
+        this.artifactSpawns.push(artifact);
+        
+        this.lastArtifactSpawn = now;
+        this.nexus.ui.log(`Artefato ${type} apareceu no campo quântico.`);
+    }
+
+    getArtifactColor(type) {
+        const colors = {
+            runes: '#00f3ff',
+            shells: '#9d4edd',
+            bones: '#ffd60a',
+            wands: '#00ffaa',
+            crystals: '#ff6b6b',
+            fragments: '#7209b7',
+            pieces: '#4cc9f0'
+        };
+        return colors[type] || '#ffffff';
+    }
+
+    getArtifactSymbol(type) {
+        const symbols = {
+            runes: 'ᚠ',
+            shells: '🐚',
+            bones: '🦴',
+            wands: '⚕️',
+            crystals: '💎',
+            fragments: '🧩',
+            pieces: '⚙️'
+        };
+        return `<div class="artifact-symbol">${symbols[type] || '?'}</div>`;
+    }
+
+    collectArtifact(artifact) {
+        // Remover do DOM
+        artifact.element.remove();
+        
+        // Remover da lista
+        this.artifactSpawns = this.artifactSpawns.filter(a => a !== artifact);
+        
+        // Adicionar à coleção
+        this.artifacts[artifact.type].collected++;
+        
+        // Recompensa
+        const reward = 50 + Math.floor(Math.random() * 100);
+        this.nexus.universe.addEnergy(reward, 'quantum');
+        
+        // Feedback visual
+        this.nexus.ui.createMicroFeedback(
+            artifact.element,
+            `+${reward}Ω`,
+            this.getArtifactColor(artifact.type)
+        );
+        
+        this.nexus.ui.log(`Artefato ${artifact.type} coletado! Total: ${this.artifacts[artifact.type].collected}/${this.artifacts[artifact.type].total}`);
+        
+        // Verificar se completou a coleção
+        if (this.artifacts[artifact.type].collected >= this.artifacts[artifact.type].total) {
+            this.completeArtifactCollection(artifact.type);
+        }
+    }
+
+    completeArtifactCollection(type) {
+        this.nexus.ui.showTransmission("ARTIFACT SYSTEM", 
+            `Coleção ${type} completa! Recompensa especial desbloqueada.`);
+        
+        // Recompensa especial
+        this.nexus.universe.addEnergy(1000, 'quantum');
+        this.nexus.universe.addEnergy(500, 'consciousness');
+        
+        // Desbloquear nova capacidade
+        switch(type) {
+            case 'runes':
+                this.unlockSpecialReading('runic_circle');
+                break;
+            case 'crystals':
+                this.unlockSpecialReading('crystal_grid');
+                break;
+            case 'fragments':
+                this.unlockPortal('expansionPortal');
+                break;
+        }
+    }
+
+    unlockSpecialReading(type) {
+        this.nexus.ui.log(`Leitura especial ${type} desbloqueada!`);
+    }
+
+    // ==================== INTERFACE DE UPGRADE ====================
+    bindUpgradeEvents() {
+        // Botão do upgrade
+        document.getElementById('btnUpgrade').addEventListener('click', () => {
+            this.showUpgradePanel();
+        });
+        
+        // Fechar painel de upgrade
+        document.getElementById('closeUpgradePanel').addEventListener('click', () => {
+            document.getElementById('upgradePanel').classList.remove('active');
+        });
+        
+        // Tabs do upgrade
+        document.querySelectorAll('.upgrade-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.upgrade-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.upgrade-tab-content').forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+                this.updateUpgradeTab(tab.dataset.tab);
+            });
+        });
+        
+        // Atualização periódica
+        setInterval(() => {
+            this.updateSystems();
+        }, 1000);
+    }
+
+    showUpgradePanel() {
+        document.getElementById('upgradePanel').classList.add('active');
+        this.updateUpgradeTab('chakras');
+    }
+
+    updateUpgradeTab(tab) {
+        const content = document.getElementById(`${tab}-tab`);
+        
+        switch(tab) {
+            case 'chakras':
+                this.renderChakrasTab(content);
+                break;
+            case 'mythologies':
+                this.renderMythologiesTab(content);
+                break;
+            case 'portals':
+                this.renderPortalsTab(content);
+                break;
+            case 'artifacts':
+                this.renderArtifactsTab(content);
+                break;
+        }
+    }
+
+    renderChakrasTab(container) {
+        let html = '<div class="chakras-grid">';
+        
+        Object.entries(this.chakras).forEach(([key, chakra]) => {
+            const percent = (chakra.energy / chakra.maxEnergy) * 100;
+            const unlockedClass = chakra.unlocked ? 'unlocked' : 'locked';
+            
+            html += `
+                <div class="chakra-card ${unlockedClass}" data-chakra="${key}">
+                    <div class="chakra-header" style="color: ${chakra.color}">
+                        <div class="chakra-symbol">●</div>
+                        <div class="chakra-name">${chakra.name}</div>
+                        <div class="chakra-level">Nível ${chakra.level}</div>
+                    </div>
+                    <div class="chakra-energy">
+                        <div class="energy-bar">
+                            <div class="energy-fill" style="width: ${percent}%; background: ${chakra.color}"></div>
+                        </div>
+                        <span class="energy-text">${chakra.energy}/${chakra.maxEnergy}</span>
+                    </div>
+                    <div class="chakra-description">${chakra.description}</div>
+                    <div class="chakra-effects">
+                        <div class="effect">Estabilidade: ×${chakra.effects.quantumStability}</div>
+                        <div class="effect">Influência: ×${chakra.effects.influenceGain}</div>
+                        <div class="effect">Oráculo: ×${chakra.effects.oracleClarity}</div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    renderMythologiesTab(container) {
+        let html = '<div class="mythologies-grid">';
+        
+        // Mitologias base
+        const baseMyths = ['norse', 'greek', 'egyptian', 'celtic'];
+        baseMyths.forEach(key => {
+            const myth = this.nexus.universe.influence[key];
+            const level = myth ? myth.level : 0;
+            
+            html += `
+                <div class="mythology-card unlocked">
+                    <div class="mythology-header">
+                        <div class="mythology-name">${key.toUpperCase()}</div>
+                        <div class="mythology-level">Nível ${level}</div>
+                    </div>
+                    <div class="mythology-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${Math.min(level * 2, 100)}%"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        // Mitologias expandidas
+        Object.entries(this.expandedMythologies).forEach(([key, myth]) => {
+            const unlockedClass = myth.unlocked ? 'unlocked' : 'locked';
+            
+            html += `
+                <div class="mythology-card ${unlockedClass}">
+                    <div class="mythology-header" style="color: ${myth.color}">
+                        <div class="mythology-name">${myth.name}</div>
+                        <div class="mythology-status">${myth.unlocked ? 'DESBLOQUEADA' : 'BLOQUEADA'}</div>
+                    </div>
+                    ${myth.unlocked ? `
+                        <div class="mythology-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${myth.progress}%"></div>
+                            </div>
+                            <div class="mythology-level">Nível ${myth.level}</div>
+                        </div>
+                        <div class="deities-list">
+                            ${myth.deities.map(d => `<span class="deity">${d.name}</span>`).join('')}
+                        </div>
+                    ` : `
+                        <div class="mythology-requirement">
+                            Requer: Nível 30 em mitologia base
+                        </div>
+                    `}
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    renderPortalsTab(container) {
+        let html = '<div class="portals-grid">';
+        
+        Object.entries(this.portals).forEach(([key, portal]) => {
+            const unlockedClass = portal.unlocked ? 'unlocked' : 'locked';
+            
+            html += `
+                <div class="portal-card ${unlockedClass}">
+                    <div class="portal-header">
+                        <div class="portal-name">${portal.name}</div>
+                        <div class="portal-status">${portal.unlocked ? 'ATIVO' : 'BLOQUEADO'}</div>
+                    </div>
+                    <div class="portal-info">
+                        <div class="portal-cost">Custo: ${portal.cost}Ω</div>
+                        <div class="portal-effect">${portal.effect}</div>
+                    </div>
+                    ${!portal.unlocked ? `
+                        <button class="unlock-portal-btn" data-portal="${key}">
+                            Desbloquear por ${portal.cost}Ω
+                        </button>
+                    ` : `
+                        <div class="portal-activated">Portal ativo</div>
+                    `}
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        container.innerHTML = html;
+        
+        // Adicionar eventos aos botões
+        container.querySelectorAll('.unlock-portal-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const portalId = e.target.dataset.portal;
+                this.unlockPortal(portalId);
+                this.renderPortalsTab(container);
+            });
+        });
+    }
+
+    renderArtifactsTab(container) {
+        let html = '<div class="artifacts-grid">';
+        
+        Object.entries(this.artifacts).forEach(([key, artifact]) => {
+            const percent = (artifact.collected / artifact.total) * 100;
+            
+            html += `
+                <div class="artifact-card">
+                    <div class="artifact-header">
+                        <div class="artifact-name">${key.toUpperCase()}</div>
+                        <div class="artifact-count">${artifact.collected}/${artifact.total}</div>
+                    </div>
+                    <div class="artifact-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                    <div class="artifact-reward">
+                        ${artifact.collected >= artifact.total ? 
+                            '✅ Coleção completa!' : 
+                            `Recompensa: ${this.getArtifactReward(key)}`
+                        }
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    getArtifactReward(type) {
+        const rewards = {
+            runes: 'Leitura Rúnica Avançada',
+            shells: 'Oráculo de Búzios Completo',
+            bones: 'Tiragem Xamânica',
+            wands: 'Ritual de Varinha',
+            crystals: 'Grade de Cristais',
+            fragments: 'Portal de Expansão',
+            pieces: 'Componentes do Cockpit'
+        };
+        return rewards[type] || 'Recompensa especial';
+    }
+
+    // ==================== ATUALIZAÇÃO DO SISTEMA ====================
+    updateSystems() {
+        // Atualizar spawn de artefatos
+        if (Math.random() < 0.01) { // 1% de chance por segundo
+            this.spawnArtifact();
+        }
+        
+        // Atualizar energia dos chakras baseado na atividade
+        if (this.nexus.universe.throttle > 0) {
+            this.addChakraEnergy(this.activeChakra, 0.1);
+        }
+        
+        // Verificar desbloqueios de mitologias
+        this.checkMythologyUnlocks();
+    }
+
+    checkMythologyUnlocks() {
+        // Verificar se o jogador atingiu nível 30 em alguma mitologia base
+        const baseMyths = ['norse', 'greek', 'egyptian', 'celtic'];
+        baseMyths.forEach(myth => {
+            if (this.nexus.universe.influence[myth].level >= 30) {
+                // Desbloquear mitologias expandidas relacionadas
+                if (myth === 'norse' && !this.expandedMythologies.slavic.unlocked) {
+                    this.unlockMythology('slavic');
+                } else if (myth === 'greek' && !this.expandedMythologies.hindu.unlocked) {
+                    this.unlockMythology('hindu');
+                }
+            }
+        });
+    }
+
+    // ==================== INTEGRAÇÃO COM SISTEMAS EXISTENTES ====================
+// ==================== INTEGRAÇÃO COM SISTEMAS EXISTENTES ====================
+        integrateWithExistingSystems() {
+            // Save references to original methods
+            const originalAddInfluence = this.nexus.universe.addInfluence.bind(this.nexus.universe);
+            const originalDraw = this.nexus.oracle.draw.bind(this.nexus.oracle);
+            
+            // Override addInfluence
+            this.nexus.universe.addInfluence = (field, amount = 1) => {
+                // Call original function
+                const result = originalAddInfluence(field, amount);
+                
+                // Add progress to expanded mythology if applicable
+                if (this.expandedMythologies[field]) {
+                    this.addMythologyProgress(field, amount * 0.5);
+                }
+                
+                return result;
+            };
+            
+            // Override oracle draw
+            this.nexus.oracle.draw = (field = null) => {
+                const card = originalDraw(field);
+                
+                // Apply chakra modifiers
+                if (this.chakras[this.activeChakra] && this.chakras[this.activeChakra].unlocked) {
+                    const chakra = this.chakras[this.activeChakra];
+                    card.effect.q *= chakra.effects.oracleClarity;
+                    card.effect.c *= chakra.effects.oracleClarity;
+                }
+                
+                return card;
+            };
+        }
+
+    // ==================== SALVAR/CARREGAR ESTADO ====================
+    saveUpgradeState() {
+        const state = {
+            chakras: this.chakras,
+            expandedMythologies: this.expandedMythologies,
+            portals: this.portals,
+            artifacts: this.artifacts,
+            activeChakra: this.activeChakra,
+            artifactSpawns: this.artifactSpawns.map(a => ({
+                type: a.type,
+                x: a.x,
+                y: a.y
+            }))
+        };
+        
+        localStorage.setItem('nexus_upgrade_state', JSON.stringify(state));
+    }
+
+    loadUpgradeState() {
+        try {
+            const saved = localStorage.getItem('nexus_upgrade_state');
+            if (saved) {
+                const state = JSON.parse(saved);
+                
+                // Carregar estado dos chakras
+                if (state.chakras) {
+                    Object.keys(state.chakras).forEach(key => {
+                        if (this.chakras[key]) {
+                            this.chakras[key] = { ...this.chakras[key], ...state.chakras[key] };
+                        }
+                    });
+                }
+                
+                // Carregar mitologias expandidas
+                if (state.expandedMythologies) {
+                    Object.keys(state.expandedMythologies).forEach(key => {
+                        if (this.expandedMythologies[key]) {
+                            this.expandedMythologies[key] = { 
+                                ...this.expandedMythologies[key], 
+                                ...state.expandedMythologies[key] 
+                            };
+                            
+                            // Recriar entidades se desbloqueada
+                            if (this.expandedMythologies[key].unlocked) {
+                                this.addMythologyEntities(key);
+                            }
+                        }
+                    });
+                }
+                
+                // Carregar portais
+                if (state.portals) {
+                    Object.keys(state.portals).forEach(key => {
+                        if (this.portals[key]) {
+                            this.portals[key] = { ...this.portals[key], ...state.portals[key] };
+                            
+                            // Recriar portal se desbloqueado
+                            if (this.portals[key].unlocked) {
+                                this.createPortalElement(key);
+                            }
+                        }
+                    });
+                }
+                
+                // Carregar artefatos
+                if (state.artifacts) {
+                    this.artifacts = state.artifacts;
+                }
+                
+                // Carregar chakra ativo
+                if (state.activeChakra) {
+                    this.activeChakra = state.activeChakra;
+                }
+                
+                this.nexus.ui.log("Estado do upgrade carregado.");
+            }
+        } catch (e) {
+            console.warn("Falha ao carregar estado do upgrade:", e);
+        }
+    }
+}
+
+// ==================== SISTEMA DE MISSÕES (ORIGINAL) ====================
 
 class MissionSystem {
     constructor(universe) {
@@ -187,6 +1220,8 @@ class MissionSystem {
         };
     }
 }
+
+// ==================== TUTORIAL MANAGER (ORIGINAL) ====================
 
 class TutorialManager {
     constructor(nexus) {
@@ -385,6 +1420,8 @@ class TutorialManager {
     }
 }
 
+// ==================== UNIVERSE STATE (ORIGINAL COM UPGRADE) ====================
+
 class UniverseState {
     constructor() {
         this.position = { x: 50, y: 50 };
@@ -439,6 +1476,11 @@ class UniverseState {
         if (newField !== this.field) {
             this.field = newField;
             this.onFieldChange();
+        }
+        
+        // Adicionar energia ao chakra ativo se houver upgrade
+        if (window.nexus.upgrade) {
+            window.nexus.upgrade.addChakraEnergy(window.nexus.upgrade.activeChakra, 0.01);
         }
         
         this.addInfluence(this.field, 0.01);
@@ -502,6 +1544,8 @@ class UniverseState {
         );
     }
 }
+
+// ==================== MOVEMENT ENGINE (ORIGINAL) ====================
 
 class MovementEngine {
     constructor(universe) {
@@ -582,6 +1626,8 @@ class MovementEngine {
         return this.lastVector;
     }
 }
+
+// ==================== ORACLE ENGINE (ORIGINAL COM UPGRADE) ====================
 
 class OracleEngine {
     constructor(universe) {
@@ -781,71 +1827,55 @@ class OracleEngine {
         };
     }
 
-    draw(field = null) {
-        const actualField = field || this.universe.field || 'base';
-        const deck = this.getDeckForField(actualField);
-        
-        const weightedDeck = deck.map(card => {
-            let weight = 1;
-            const recentDraws = this.universe.lastOracleDraws.filter(d => 
-                d.card.name === card.name && Date.now() - d.time < 30000
-            );
-            weight /= (recentDraws.length + 1);
-            return { card, weight };
-        });
-        
-        const totalWeight = weightedDeck.reduce((sum, w) => sum + w.weight, 0);
-        let random = Math.random() * totalWeight;
-        
-        for (const { card, weight } of weightedDeck) {
-            if (random < weight) {
-                const mod = this.universe.getFieldModifier(actualField);
-                const adjustedEffect = {
-                    q: card.effect.q * mod.oracleWeight,
-                    c: card.effect.c * (actualField === 'base' ? 1 : 1.5)
-                };
-                
-                this.universe.lastOracleDraws.unshift({
-                    card: { ...card, effect: adjustedEffect },
-                    field: actualField,
-                    time: Date.now()
-                });
-                
-                if (this.universe.lastOracleDraws.length > 5) {
-                    this.universe.lastOracleDraws.pop();
+        draw(field = null) {
+            const actualField = field || this.universe.field || 'base';
+            const deck = this.getDeckForField(actualField);
+            
+            const weightedDeck = deck.map(card => {
+                let weight = 1;
+                const recentDraws = this.universe.lastOracleDraws.filter(d => 
+                    d.card.name === card.name && Date.now() - d.time < 30000
+                );
+                weight /= (recentDraws.length + 1);
+                return { card, weight };
+            });
+            
+            const totalWeight = weightedDeck.reduce((sum, w) => sum + w.weight, 0);
+            let random = Math.random() * totalWeight;
+            
+            for (const { card, weight } of weightedDeck) {
+                if (random < weight) {
+                    const mod = this.universe.getFieldModifier(actualField);
+                    let adjustedEffect = {
+                        q: card.effect.q * mod.oracleWeight,
+                        c: card.effect.c * (actualField === 'base' ? 1 : 1.5)
+                    };
+                    
+                    // Save to history
+                    this.universe.lastOracleDraws.unshift({
+                        card: { ...card, effect: adjustedEffect },
+                        field: actualField,
+                        time: Date.now()
+                    });
+                    
+                    if (this.universe.lastOracleDraws.length > 5) {
+                        this.universe.lastOracleDraws.pop();
+                    }
+                    
+                    return {
+                        ...card,
+                        effect: adjustedEffect,
+                        field: actualField
+                    };
                 }
-                
-                return {
-                    ...card,
-                    effect: adjustedEffect,
-                    field: actualField
-                };
+                random -= weight;
             }
-            random -= weight;
+            
+            return deck[0];
         }
-        
-        return deck[0];
-    }
-
-    drawTriple() {
-        const field = this.universe.field || 'base';
-        return [
-            this.draw(field),
-            this.draw(field),
-            this.draw(field)
-        ];
-    }
-
-    getDeckForField(field) {
-        let deck = [...this.decks.base];
-        
-        if (field !== 'base' && this.universe.influence[field].level >= 10) {
-            deck = [...deck, ...this.decks[field]];
-        }
-        
-        return deck;
-    }
 }
+
+// ==================== UI MANAGER (ORIGINAL COM UPGRADE) ====================
 
 class UIManager {
     constructor(nexus) {
@@ -1301,6 +2331,8 @@ class UIManager {
     }
 }
 
+// ==================== NEXUS CORE (ORIGINAL COM UPGRADE) ====================
+
 class NexusCore {
     constructor() {
         this.universe = new UniverseState();
@@ -1308,6 +2340,7 @@ class NexusCore {
         this.oracle = new OracleEngine(this.universe);
         this.ui = new UIManager(this);
         this.tutorial = new TutorialManager(this);
+        this.upgrade = new QuantumUpgradeSystem(this); // SISTEMA DE UPGRADE
         
         this.isDragging = false;
         this.touchStart = null;
@@ -1362,6 +2395,11 @@ class NexusCore {
                         loader.style.display = 'none';
                         this.ui.log("System Online. Welcome to Nexus 2126.");
                         this.ui.showTransmission("SYSTEM", "Quantum field stable. Begin exploration.");
+                        
+                        // Verificar se há sistema de upgrade
+                        if (this.upgrade) {
+                            this.ui.log("Quantum Upgrade System initialized.");
+                        }
                     }, 500);
                 }, 500);
             }
@@ -1565,7 +2603,12 @@ class NexusCore {
             }
         });
         
-        window.addEventListener('beforeunload', () => this.saveState());
+        window.addEventListener('beforeunload', () => {
+            this.saveState();
+            if (this.upgrade) {
+                this.upgrade.saveUpgradeState();
+            }
+        });
     }
 
     setupMobileControls() {
@@ -1793,31 +2836,47 @@ class NexusCore {
         randomEvent();
     }
 
-    checkUnlocks() {
-        const fields = ['norse', 'greek', 'egyptian', 'celtic'];
-        fields.forEach(field => {
-            const unlock = this.universe.addInfluence(field, 0);
-            if (unlock) {
-                this.ui.showUnlockEffect(field, unlock.threshold);
+        checkUnlocks() {
+            const fields = ['norse', 'greek', 'egyptian', 'celtic'];
+            
+            fields.forEach(field => {
+                // Get current level and thresholds
+                const currentLevel = this.universe.influence[field].level;
+                const thresholds = [5, 15, 30, 50];
+                const unlocked = this.universe.influence[field].unlocked || [];
                 
-                switch(unlock.index) {
-                    case 0:
-                        this.ui.log(`${field.toUpperCase()} field accessible.`);
-                        break;
-                    case 1:
-                        this.ui.showTransmission("SYSTEM", `Minor deities available in ${field}.`);
-                        break;
-                    case 2:
-                        this.ui.showTransmission("SYSTEM", `Rituals unlocked in ${field}.`);
-                        break;
-                    case 3:
-                        this.ui.showTransmission("ASCENSION", `${field.toUpperCase()} MASTERY ACHIEVED`);
-                        this.universe.addEnergy(500, 'quantum');
-                        break;
-                }
-            }
-        });
-    }
+                thresholds.forEach(threshold => {
+                    // Check if we've reached this threshold but haven't unlocked it yet
+                    if (currentLevel >= threshold && !unlocked.includes(threshold)) {
+                        // Mark as unlocked
+                        if (!this.universe.influence[field].unlocked) {
+                            this.universe.influence[field].unlocked = [];
+                        }
+                        this.universe.influence[field].unlocked.push(threshold);
+                        
+                        // Show unlock effect
+                        this.ui.showUnlockEffect(field, threshold);
+                        
+                        // Log the unlock
+                        switch(threshold) {
+                            case 5:
+                                this.ui.log(`${field.toUpperCase()} field accessible.`);
+                                break;
+                            case 15:
+                                this.ui.showTransmission("SYSTEM", `Minor deities available in ${field}.`);
+                                break;
+                            case 30:
+                                this.ui.showTransmission("SYSTEM", `Rituals unlocked in ${field}.`);
+                                break;
+                            case 50:
+                                this.ui.showTransmission("ASCENSION", `${field.toUpperCase()} MASTERY ACHIEVED`);
+                                this.universe.addEnergy(500, 'quantum');
+                                break;
+                        }
+                    }
+                });
+            });
+        }
 
     togglePause() {
         const btn = document.getElementById('btnPause');
@@ -1878,6 +2937,8 @@ class NexusCore {
         }
     }
 }
+
+// ==================== INICIALIZAÇÃO ====================
 
 window.addEventListener('load', () => {
     window.nexus = new NexusCore();
